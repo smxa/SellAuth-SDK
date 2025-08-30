@@ -34,8 +34,6 @@ pnpm add @wtfservices/sellauth-utils
 yarn add @wtfservices/sellauth-utils
 ```
 
-(Adjust name if published under a different package scope.)
-
 ## Quick Start
 
 Full structured resource & type reference: [SDK Docs](./docs/SDK.md) | Core REST endpoint list: [API Endpoints](./docs/API.md)
