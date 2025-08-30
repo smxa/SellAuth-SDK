@@ -1,9 +1,9 @@
 {
-  "name": "sellauth-utils",
+  "name": "@wtfservices/sellauth-utils",
   "version": "0.2.1",
   "description": "TypeScript SDK for the SellAuth API (resources, advanced client, pagination, middleware).",
   "license": "MIT",
-  "author": "Alex Marshall <business@illegal.wtf>",
+  "author": "WTF Services <business@illegal.wtf>",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/smxa/SellAuth-SDK.git"
@@ -21,16 +21,17 @@
     "middleware",
     "pagination"
   ],
-  "type": "module",
+  "type": "commonjs",
   "main": "dist/index.cjs",
-  "module": "dist/index.js",
+  "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
+      "import": "./dist/index.mjs",
       "require": "./dist/index.cjs"
-    }
+    },
+    "./package.json": "./package.json"
   },
   "files": [
     "dist",
@@ -43,8 +44,13 @@
     "access": "public"
   },
   "scripts": {
-    "build": "tsc -p tsconfig.json",
-    "prepare": "npm run build",
+    "clean": "rm -rf dist dist-cjs",
+    "build:tsup": "tsup src/index.ts --format cjs,esm --dts --sourcemap --clean --out-dir dist",
+    "build": "npm run build:tsup",
+    "_old:build:cjs": "tsc -p tsconfig.cjs.json",
+    "_old:build:dual": "rm -rf dist dist-cjs && npm run build:esm && npm run build:cjs && node scripts/patch-esm.mjs && cp dist-cjs/index.js dist/index.cjs",
+    "_old:build": "npm run build:dual",
+    "prepare": "npm run build:tsup",
     "lint": "eslint . --ext .ts",
     "example": "tsx examples/usage.ts",
     "example:advanced": "tsx examples/advanced.ts",
@@ -59,6 +65,7 @@
     "eslint": "^9.34.0",
     "eslint-config-prettier": "^10.1.8",
     "prettier": "^3.6.2",
+    "tsup": "^8.5.0",
     "tsx": "^4.7.0",
     "typescript": "^5.4.0"
   },
