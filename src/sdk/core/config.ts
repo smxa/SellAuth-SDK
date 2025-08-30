@@ -6,14 +6,14 @@ export interface RetryOptions {
   factor?: number; // exponential factor default 2
   baseDelayMs?: number; // default 300
   maxDelayMs?: number; // cap
-  retryOn?(ctx: { attempt: number; error?: any; response?: Response; request: NormalizedRequest }): boolean | Promise<boolean>;
+  retryOn?(_ctx: { attempt: number; error?: any; response?: Response; request: NormalizedRequest }): boolean | Promise<boolean>;
   methods?: string[]; // default safe methods
   statusCodes?: number[]; // override list for HTTP responses
 }
 
 export interface TransportResponseLike {
   status: number;
-  headers: Record<string,string> | { get(name: string): string | null };
+  headers: Record<string,string> | { get(_name: string): string | null };
   text(): Promise<string>;
   ok?: boolean; // optional; if absent compute status in 200-299
 }
@@ -29,10 +29,10 @@ export interface NormalizedRequest {
 }
 
 export interface Transport {
-  (req: NormalizedRequest): Promise<TransportResponseLike>;
+  (_req: NormalizedRequest): Promise<TransportResponseLike>;
 }
 
-export type Middleware = (next: Transport) => Transport;
+export type Middleware = (_next: Transport) => Transport;
 
 export interface AuthConfig {
   type?: 'apiKey' | 'bearer' | 'custom';
@@ -40,14 +40,14 @@ export interface AuthConfig {
   headerName?: string; // default Authorization
   scheme?: string; // e.g. Bearer, token
   bearer?: () => string | Promise<string>; // dynamic token getter
-  authorize?: (req: NormalizedRequest) => void | Promise<void>; // custom
+  authorize?: (_req: NormalizedRequest) => void | Promise<void>; // custom
 }
 
 export interface LoggerLike {
-  debug?: (...a:any[]) => void;
-  info?: (...a:any[]) => void;
-  warn?: (...a:any[]) => void;
-  error?: (...a:any[]) => void;
+  debug?: (..._a:any[]) => void;
+  info?: (..._a:any[]) => void;
+  warn?: (..._a:any[]) => void;
+  error?: (..._a:any[]) => void;
 }
 
 export interface SellAuthAdvancedConfig {
@@ -60,8 +60,8 @@ export interface SellAuthAdvancedConfig {
   transport?: Transport; // override entire transport
   middleware?: Middleware[];
   logger?: LoggerLike;
-  beforeRequest?(req: NormalizedRequest): void | Promise<void>;
-  afterResponse?(res: any, req: NormalizedRequest): void | Promise<void>;
+  beforeRequest?(_req: NormalizedRequest): void | Promise<void>;
+  afterResponse?(_res: any, _req: NormalizedRequest): void | Promise<void>;
 }
 
 export interface RequestOptions {
@@ -76,7 +76,7 @@ export interface RequestOptions {
 export interface RequestContext<T=any> {
   response?: T;
   error?: any;
-  request: NormalizedRequest;
+  request: NormalizedRequest; // original request
 }
 
 export function normalizeConfig(c: SellAuthAdvancedConfig): Required<Pick<SellAuthAdvancedConfig,'baseUrl'|'timeoutMs'>> & SellAuthAdvancedConfig & { retry: RetryOptions } {

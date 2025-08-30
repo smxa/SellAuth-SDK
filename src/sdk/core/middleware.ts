@@ -3,27 +3,33 @@ import { SellAuthError } from './http';
 
 export const authMiddleware = (cfg: { auth?: any; apiKey?: string; logger?: any; }): Middleware => (next: Transport) => async (req) => {
   const a = cfg.auth || {};
+  // Basic validation: ensure some token path is available
+  if (!a && !cfg.apiKey) {
+    cfg.logger?.warn?.('authMiddleware: no auth configured');
+  }
   if (a.type === 'custom' && a.authorize) {
     await a.authorize(req);
   } else if (a.type === 'bearer') {
     const token = a.bearer ? await a.bearer() : a.apiKey || cfg.apiKey;
-    if (token) req.headers['Authorization'] = `${a.scheme || 'Bearer'} ${token}`;
-  } else { // default apiKey
+    if (!token) throw new SellAuthError('Missing bearer token');
+    req.headers['Authorization'] = `${a.scheme || 'Bearer'} ${token}`;
+  } else { // default apiKey/bearer static
     const token = a.apiKey || cfg.apiKey;
-    if (token) req.headers['Authorization'] = `${a.scheme || 'Bearer'} ${token}`;
+    if (!token) cfg.logger?.warn?.('authMiddleware: missing API key');
+    else req.headers['Authorization'] = `${a.scheme || 'Bearer'} ${token}`;
   }
   return next(req);
 };
 
 export const loggerMiddleware = (logger: any): Middleware => (next: Transport) => async (req) => {
-  logger?.debug?.('request', { method: req.method, url: req.url, headers: req.headers });
   const start = Date.now();
+  logger?.debug?.('request', { method: req.method, url: req.url, headers: req.headers });
   try {
     const res = await next(req);
     logger?.debug?.('response', { url: req.url, status: res.status, ms: Date.now()-start });
     return res;
   } catch (e: any) {
-    logger?.error?.('error', { url: req.url, error: e });
+    logger?.error?.('error', { url: req.url, error: e, ms: Date.now()-start });
     throw e;
   }
 };
@@ -38,13 +44,17 @@ export const retryMiddleware = (retry: RetryOptions, logger?: any): Middleware =
       const ok = (res as any).ok !== undefined ? (res as any).ok : (res.status >= 200 && res.status < 300);
       if (!ok) {
         const doRetry = await shouldRetry({ retry, attempt, response: res, request: req });
-        if (doRetry && attempt < attempts - 1) { await sleep(backoffDelay(retry, attempt)); attempt++; continue; }
+        if (doRetry && attempt < attempts - 1) {
+          logger?.debug?.('retry', { attempt: attempt + 1, status: res.status, url: req.url });
+          await sleep(backoffDelay(retry, attempt)); attempt++; continue; }
       }
       return res;
     } catch (err) {
       lastError = err;
       const doRetry = await shouldRetry({ retry, attempt, error: err, request: req });
-      if (doRetry && attempt < attempts - 1) { await sleep(backoffDelay(retry, attempt)); attempt++; continue; }
+      if (doRetry && attempt < attempts - 1) {
+        logger?.debug?.('retry', { attempt: attempt + 1, error: (err && (typeof err === 'object') ? (err as any).message : String(err)), url: req.url });
+        await sleep(backoffDelay(retry, attempt)); attempt++; continue; }
       break;
     }
   }
@@ -52,8 +62,8 @@ export const retryMiddleware = (retry: RetryOptions, logger?: any): Middleware =
 };
 
 async function shouldRetry(p: { retry: RetryOptions; attempt: number; response?: TransportResponseLike; error?: any; request: NormalizedRequest }): Promise<boolean> {
-  const { retry, response, error, request, attempt } = p;
-  if (retry.retryOn) return !!(await retry.retryOn({ attempt, response: response as any, error, request }));
+  const { retry, response, error, request } = p;
+  if (retry.retryOn) return !!(await retry.retryOn({ attempt: p.attempt, response: response as any, error, request }));
   if (error) return true; // network / thrown
   if (response) {
     if (retry.methods && !retry.methods.includes(request.method.toUpperCase())) return false;
@@ -68,7 +78,8 @@ function backoffDelay(retry: RetryOptions, attempt: number): number {
   if (retry.backoff === 'fixed') return base;
   const factor = retry.factor ?? 2;
   const delay = base * Math.pow(factor, attempt);
-  return Math.min(retry.maxDelayMs ?? delay, delay) * (1 + Math.random()*JITTER_FACTOR);
+  const capped = Math.min(retry.maxDelayMs ?? delay, delay);
+  return capped * (1 + Math.random()*JITTER_FACTOR);
 }
 
 function sleep(ms: number) { return new Promise(r => setTimeout(r, ms)); }
@@ -85,6 +96,5 @@ export const responseParsingMiddleware: Middleware = (next: Transport) => async 
   if (!ok) {
     throw new SellAuthError((data && data.message) || `HTTP ${res.status}`, { status: res.status, details: data });
   }
-  // Repackage minimal response-like structure returning parsed data in .json
   return { ...res, data } as any;
 };

@@ -89,12 +89,12 @@ auth: {
 - `afterResponse(data, req)` — emit metrics, logging, caching, tracing end.
 
 ### Middleware Pipeline
-Built‑ins (outer → inner):
+Built‑ins (outer → inner) actual execution order (user supplied middleware wrap these and run BEFORE auth):
 1. `authMiddleware`
 2. `loggerMiddleware` (only if `logger` provided)
 3. `retryMiddleware`
 4. `responseParsingMiddleware`
-5. Your custom `middleware[]` (added innermost so they see parsed response). You can change ordering by composing manually (see below).
+5. Your custom `middleware[]` (added outermost so they see the request before built-ins and the raw response before parsing). You can change ordering by composing manually (see below).
 
 Custom middleware signature:
 ```ts

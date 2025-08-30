@@ -32,7 +32,9 @@ export default [
     },
     // TS plugin omitted for now; add later when full preset desired
     rules: {
-      'no-unused-vars': ['warn', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }]
+      'no-unused-vars': ['warn', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
+      
+      
     }
   }
 ];

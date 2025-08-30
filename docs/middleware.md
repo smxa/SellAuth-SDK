@@ -2,14 +2,14 @@
 
 This document expands on the built‑in middleware supplied by `AdvancedSellAuthClient`.
 
-Order (outer → inner) when constructing the default pipeline:
+Order (outer → inner) when constructing the default pipeline (user middleware wrap built-ins):
 1. `authMiddleware`
 2. `loggerMiddleware` (only if `logger` provided)
 3. `retryMiddleware`
 4. `responseParsingMiddleware`
 5. Custom `middleware[]` (user supplied)
 
-Because composition reduces right, user middleware executes closest to the transport (after parsing). If you need access to the raw body/response text before JSON parsing, supply a custom transport or replicate the built‑ins with your own order.
+Because composition reduces right with user middleware placed first in the chain array, user middleware executes outermost (before auth) and can still observe the raw response (before parsing) only by supplying a custom transport or reordering. The default placement means they see the request pre‑auth header injection; prefer placing auth concerns in a dedicated custom middleware if overriding ordering.
 
 ## Auth Middleware
 Adds `Authorization` header.

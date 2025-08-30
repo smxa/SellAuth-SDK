@@ -1,2 +1,6 @@
+# .eslintignore
+
 dist/
 node_modules/
+coverage/
+build/

@@ -1,24 +1,35 @@
-import { AdvancedSellAuthClient, Middleware } from '../src/sdk';
+import { AdvancedSellAuthClient } from '../src/sdk/advanced';
+import type { Middleware } from '../src/sdk/advanced';
 
-// Simple in-memory GET cache with TTL
-interface CacheEntry { expires: number; value: any; }
-const cache = new Map<string, CacheEntry>();
+// Simple per-middleware-instance in-memory GET cache with TTL
+interface CacheEntry { expires: number; value: any; raw: string; }
 
-function cacheKey(req: any) { return req.method + ' ' + req.url; }
-
-const cachingMiddleware = (ttlMs: number): Middleware => (next) => async (req) => {
-  if (req.method === 'GET') {
-    const key = cacheKey(req);
-    const hit = cache.get(key);
-    const now = Date.now();
-    if (hit && hit.expires > now) {
-      return { status: 200, headers: {}, text: async () => JSON.stringify(hit.value), ok: true, data: hit.value } as any;
+const cachingMiddleware = (ttlMs: number): Middleware => {
+  const cache = new Map<string, CacheEntry>();
+  const keyFor = (req: any) => {
+    const auth = Object.keys(req.headers || {}).find(h => h.toLowerCase() === 'authorization');
+    const authVal = auth ? req.headers[auth] : '';
+    const authFp = authVal ? authVal.slice(0,16) : '';
+    return req.method + ' ' + req.url + ' ' + authFp;
+  };
+  return (next) => async (req) => {
+    if (req.method === 'GET') {
+      const key = keyFor(req);
+      const hit = cache.get(key);
+      const now = Date.now();
+      if (hit && hit.expires > now) {
+        return { status: 200, headers: {}, text: async () => hit.raw, ok: true, data: hit.value } as any;
+      }
+      const res: any = await next(req);
+      const ok = res && (typeof res.ok === 'boolean' ? res.ok : (res.status >=200 && res.status <300));
+      if (ok) {
+        const raw = JSON.stringify(res.data);
+        cache.set(key, { expires: Date.now() + ttlMs, value: res.data, raw });
+      }
+      return res;
     }
-    const res: any = await next(req);
-    cache.set(key, { expires: Date.now() + ttlMs, value: (res as any).data });
-    return res;
-  }
-  return next(req);
+    return next(req);
+  };
 };
 
 async function main() {

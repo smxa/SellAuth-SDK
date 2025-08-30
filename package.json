@@ -10,7 +10,8 @@
     "prepare": "npm run build",
     "lint": "eslint . --ext .ts",
     "example": "tsx examples/usage.ts",
-    "example:advanced": "tsx examples/advanced.ts"
+    "example:advanced": "tsx examples/advanced.ts",
+    "example:caching": "tsx examples/caching-middleware.ts"
   },
   "devDependencies": {
     "@types/node": "^20.11.0",
