@@ -62,12 +62,13 @@ async function shouldRetry(p: { retry: RetryOptions; attempt: number; response?:
   return false;
 }
 
+const JITTER_FACTOR = 0.2;
 function backoffDelay(retry: RetryOptions, attempt: number): number {
   const base = retry.baseDelayMs ?? 300;
   if (retry.backoff === 'fixed') return base;
   const factor = retry.factor ?? 2;
   const delay = base * Math.pow(factor, attempt);
-  return Math.min(retry.maxDelayMs ?? delay, delay) * (1 + Math.random()*0.2);
+  return Math.min(retry.maxDelayMs ?? delay, delay) * (1 + Math.random()*JITTER_FACTOR);
 }
 
 function sleep(ms: number) { return new Promise(r => setTimeout(r, ms)); }
