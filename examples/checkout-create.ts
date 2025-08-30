@@ -30,11 +30,11 @@ async function main() {
     const checkout = await client.checkout(shopId).create({
       cart: [{ productId: 448341, variantId: 655292, quantity: 1 }],
       gateway: 'STRIPE',
-      email: 'internal@illegal.wtf',
+      email: 'customer@example.com',
       // Optional: return_url, metadata, currency, etc.
     } as any); // Cast if local type doesn't include extra fields yet
 
-    console.log('\nCheckout created');
+    console.log('Checkout created');
     console.log(' success:', (checkout as any).success);
     console.log(' invoice id:', (checkout as any).invoice_id);
     console.log(' invoice URL:', (checkout as any).invoice_url);

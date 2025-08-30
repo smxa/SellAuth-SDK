@@ -76,13 +76,12 @@ for await (const product of paginateAll(
 ### Create a checkout (server-side)
 
 ```ts
-// Response includes: success, invoice_id, invoice_url, url (hosted payment page)
 const session = await client.checkout(shopId).create({
-  cart: [{ productId: 448341, variantId: 655292, quantity: 1 }],
+  cart: [{ productId: 1, variantId: 2, quantity: 1 }],
   gateway: 'STRIPE',
   email: 'customer@example.com',
 });
-console.log(session.success, session.invoice_id, session.invoice_url, session.url);
+console.log(session.invoice_url, session.url);
 ```
 
 ### Error handling
