@@ -1,0 +1,51 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Type Check / Build
+        run: npm run build --if-present
+
+      - name: Ensure dist present
+        run: test -d dist || (echo 'dist missing after build' && exit 1)
+
+      - name: Pack (dry run)
+        run: npm pack --dry-run
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: package-dry-run
+          path: |
+            dist/**
+            package.json
+            README.md
+            LICENSE
+            *.tgz
