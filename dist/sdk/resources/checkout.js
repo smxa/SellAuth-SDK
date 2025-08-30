@@ -1,9 +1,14 @@
 export class CheckoutAPI {
-    http;
-    shopId;
-    constructor(http, shopId) {
-        this.http = http;
-        this.shopId = shopId;
+    _http;
+    _shopId;
+    constructor(_http, _shopId) {
+        this._http = _http;
+        this._shopId = _shopId;
+        /* store deps */
     }
-    create(payload) { return this.http.request('POST', `/shops/${this.shopId}/checkout`, { body: payload }); }
+    create(payload) {
+        return this._http.request('POST', `/shops/${this._shopId}/checkout`, {
+            body: payload,
+        });
+    }
 }

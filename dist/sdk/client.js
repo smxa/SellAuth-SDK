@@ -1,8 +1,8 @@
-import { HttpClient } from "./core/http";
-import { CheckoutAPI } from "./resources/checkout";
-import { InvoicesAPI } from "./resources/invoices";
-import { ProductsAPI } from "./resources/products";
-import { ShopsAPI } from "./resources/shops";
+import { HttpClient } from './core/http';
+import { CheckoutAPI } from './resources/checkout';
+import { InvoicesAPI } from './resources/invoices';
+import { ProductsAPI } from './resources/products';
+import { ShopsAPI } from './resources/shops';
 export class SellAuthClient {
     opts;
     http;

@@ -1,10 +1,10 @@
 export async function* paginateAll(fetchPage, opts = {}) {
-    const pageSize = Math.max(1, Math.min(opts.pageSize ?? 50, 100));
+    const pageSize = Math.max(1, Math.min(opts.pageSize ?? 50, 100)); // clamp 1..100
     const maxPages = opts.maxPages ?? Infinity;
     const concurrency = Math.max(1, Math.floor(opts.concurrency ?? 1));
     const stopOnEmpty = opts.stopOnEmpty ?? true;
-    const transform = opts.transform ?? (v => v);
-    const onPage = opts.onPage;
+    const transform = opts.transform ?? ((v, _index) => v); // default identity; underscore index to satisfy lint
+    const onPage = opts.onPage; // optional hook
     let page = 1;
     let pagesFetched = 0;
     while (pagesFetched < maxPages) {
@@ -51,16 +51,22 @@ export async function* paginateAll(fetchPage, opts = {}) {
 export async function fetchAllPages(fetchPage, opts = {}) {
     const out = [];
     for await (const item of paginateAll(fetchPage, { ...opts, transform: undefined })) {
+        // item consumed for accumulation
         out.push(item);
     }
     return out;
 }
 export async function fetchPages(fetchPage, opts = {}) {
     const pages = [];
-    const collector = async (_pageNum, items) => { pages.push(items); };
+    const collector = async (_pageNum, items) => {
+        pages.push(items);
+    }; // keep for side-effect
     await (async () => {
-        const gen = paginateAll(fetchPage, { ...opts, onPage: collector, transform: v => v });
-        for await (const _ of gen) { /* consume to trigger onPage */ }
+        // IIFE to consume generator
+        const gen = paginateAll(fetchPage, { ...opts, onPage: collector, transform: (v) => v });
+        for await (const _ of gen) {
+            /* consume to trigger onPage */
+        } // underscore to mark unused
     })();
     return pages;
 }

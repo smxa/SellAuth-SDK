@@ -7,10 +7,10 @@ export interface CheckoutSession {
     [k: string]: any;
 }
 export declare class CheckoutAPI {
-    private http;
-    private shopId;
-    constructor(http: {
+    private readonly _http;
+    private readonly _shopId;
+    constructor(_http: {
         request: RequestFn;
-    }, shopId: number | string);
+    }, _shopId: number | string);
     create(payload: Record<string, any>): Promise<CheckoutSession>;
 }

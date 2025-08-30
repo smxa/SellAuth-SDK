@@ -8,8 +8,8 @@ export interface Shop {
     [k: string]: any;
 }
 export declare class ShopsAPI {
-    private http;
-    constructor(http: {
+    private readonly _http;
+    constructor(_http: {
         request: RequestFn;
     });
     list(): Promise<Shop>;

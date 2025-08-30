@@ -16,11 +16,11 @@ export interface Product {
     [k: string]: any;
 }
 export declare class ProductsAPI {
-    private http;
-    private shopId;
-    constructor(http: {
+    private readonly _http;
+    private readonly _shopId;
+    constructor(_http: {
         request: RequestFn;
-    }, shopId: number | string);
+    }, _shopId: number | string);
     list(params?: Record<string, any>): Promise<Product[]>;
     create(payload: Record<string, any>): Promise<Product>;
     get(productId: number | string): Promise<Product>;
