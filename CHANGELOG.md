@@ -1,8 +1,27 @@
 # Changelog
 
+## 0.3.0 - 2025-08-30
+
+### Changed
+
+- Package scoped to `@wtfservices/sellauth-utils` (was `sellauth-utils`).
+- Build pipeline simplified: migrated to `tsup` dual output (CJS + ESM) with type declarations & sourcemaps.
+- Removed custom ESM patch script and secondary CommonJS tsconfig.
+- Updated README and docs to use scoped imports.
+
+### Added
+
+- Conditional `exports` map providing proper `import`/`require` entrypoints.
+- Type check step and pnpm caching improvements in CI.
+
+### Removed
+
+- Legacy patch script (`scripts/patch-esm.mjs`) and `tsconfig.cjs.json`.
+
 ## 0.2.1 - 2025-08-30
 
 ### Changed
+
 - Retry: switched to symmetric jitter (±20%) for exponential backoff to better distribute retries.
 - Logging: `loggerMiddleware` now redacts sensitive headers by default (Authorization, API keys, cookies). Added options for custom sensitive headers, allowlist, and mask function.
 - README overhauled for public release (install, security, advanced usage, release process).
@@ -25,12 +44,10 @@
 
 - README: Added Advanced Usage section linking to new docs.
 
-
 ### Notes
 
 - Backwards compatible: existing `SellAuthClient` usage unchanged.
 - Lint cleanup (removed unused vars) and clarified middleware ordering docs.
-
 
 - No runtime breaking changes; minor version bump per semver for additive features.
 
