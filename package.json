@@ -1,6 +1,6 @@
 {
   "name": "@wtfservices/sellauth-utils",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "TypeScript SDK for the SellAuth API (resources, advanced client, pagination, middleware).",
   "license": "MIT",
   "author": "WTF Services <business@illegal.wtf>",
@@ -44,13 +44,10 @@
     "access": "public"
   },
   "scripts": {
-    "clean": "rm -rf dist dist-cjs",
-    "build:tsup": "tsup src/index.ts --format cjs,esm --dts --sourcemap --clean --out-dir dist",
-    "build": "npm run build:tsup",
-    "_old:build:cjs": "tsc -p tsconfig.cjs.json",
-    "_old:build:dual": "rm -rf dist dist-cjs && npm run build:esm && npm run build:cjs && node scripts/patch-esm.mjs && cp dist-cjs/index.js dist/index.cjs",
-    "_old:build": "npm run build:dual",
-    "prepare": "npm run build:tsup",
+    "clean": "rm -rf dist",
+    "build": "tsup src/index.ts --format cjs,esm --dts --sourcemap --clean --out-dir dist",
+    "test:build": "node -e \"require('./dist');import('./dist/index.mjs')\"",
+    "prepare": "pnpm run build",
     "lint": "eslint . --ext .ts",
     "example": "tsx examples/usage.ts",
     "example:advanced": "tsx examples/advanced.ts",

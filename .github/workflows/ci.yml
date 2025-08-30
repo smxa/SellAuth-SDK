@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -22,22 +22,25 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'npm'
+          cache: 'pnpm'
+
+      - name: Enable corepack (pnpm)
+        run: corepack enable
 
       - name: Install dependencies
-        run: npm install --no-audit --no-fund
+        run: pnpm install --frozen-lockfile
 
       - name: Lint
-        run: npm run lint
+        run: pnpm run lint
 
-      - name: Type Check / Build
-        run: npm run build --if-present
+      - name: Build
+        run: pnpm run build
 
-      - name: Ensure dist present
-        run: test -d dist || (echo 'dist missing after build' && exit 1)
+      - name: Ensure dist artifacts present
+        run: test -f dist/index.js && test -f dist/index.mjs && test -f dist/index.d.ts || (echo 'expected build artifacts missing' && ls -R dist && exit 1)
 
       - name: Pack (dry run)
-        run: npm pack --dry-run
+        run: pnpm pack --dry-run
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
