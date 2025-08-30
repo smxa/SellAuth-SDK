@@ -1,4 +1,4 @@
-// Advanced explicit entrypoint: consumers import from 'sellauth-utils/dist/sdk/advanced' (via package export once added)
+// Advanced explicit entrypoint: consumers import from '@wtfservices/sellauth-utils/dist/sdk/advanced' (via package export once added)
 export { AdvancedSellAuthClient } from './client-advanced';
 export type {
   SellAuthAdvancedConfig,

@@ -5,7 +5,7 @@ This SDK provides an `AdvancedSellAuthClient` for fine‑grained control over tr
 ## Quick Start
 
 ```ts
-import { AdvancedSellAuthClient } from 'sellauth-utils';
+import { AdvancedSellAuthClient } from '@wtfservices/sellauth-utils';
 
 const client = new AdvancedSellAuthClient({
   apiKey: process.env.SELLAUTH_TOKEN, // simple static key
@@ -105,7 +105,7 @@ To fully customize ordering, supply your own composed transport or open an issue
 Custom middleware signature:
 
 ```ts
-import { Middleware } from 'sellauth-utils';
+import { Middleware } from '@wtfservices/sellauth-utils';
 
 const metricsMiddleware: Middleware = (next) => async (req) => {
   const start = Date.now();
@@ -128,7 +128,7 @@ If you need a custom order, wrap a custom transport that composes your preferred
 Implement the `Transport` interface:
 
 ```ts
-import type { Transport, NormalizedRequest } from 'sellauth-utils';
+import type { Transport, NormalizedRequest } from '@wtfservices/sellauth-utils';
 
 const nodeFetchTransport: Transport = async (req) => {
   const controller = new AbortController();
