@@ -1,0 +1,37 @@
+# Node
+node_modules/
+
+# Build output
+dist/
+*.tsbuildinfo
+
+# Environment & secrets
+.env
+.env.local
+.env.*.local
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# IDE / Editor
+.vscode/
+.idea/
+*.swp
+.DS_Store
+
+# Coverage / testing
+coverage/
+*.lcov
+
+# Generated types and samples (retain committed ones selectively)
+recorded-responses/*.json
+!recorded-responses/README.md
+src/sdk/types/generated/*.ts
+!src/sdk/types/generated/.gitkeep
+
+# Misc
+.tmp/
+.cache/
