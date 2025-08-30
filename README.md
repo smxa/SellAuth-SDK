@@ -1,5 +1,14 @@
 # SellAuth Utils
 
+Open Source TypeScript SDK for the SellAuth API.
+
+Transparency note: This repository is published publicly for open-source transparency and auditability. It contains the actual client/runtime utilities used on the backend of https://illegal.wtf/ (WTF Services) – with only private configuration and secrets excluded. Publishing the code allows anyone to:
+
+- Inspect authentication, retry, pagination and middleware behavior.
+- Verify there is no hidden telemetry or unexpected network traffic.
+- Reproduce / debug issues seen in production.
+- Build compatible tooling or contribute improvements.
+
 TypeScript SDK for the SellAuth API.
 
 Provides:
