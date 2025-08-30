@@ -111,6 +111,11 @@ examples/               # Usage examples
 
 ## Running Examples
 ```bash
+export SELLAUTH_TOKEN="<your-api-key-here>"  # example
+node --loader tsx examples/usage.ts
+```
+The line is annotated with `# example` so the pre-commit secret scan hook treats it as an intentional documentation example.
+```bash
 SELLAUTH_TOKEN=... node --loader tsx examples/usage.ts
 ```
 (If variable name is `SELLAUTH_TOKEN`, adjust accordingly.)
@@ -150,6 +155,7 @@ const shops = await client.request('GET', '/shops');
 ```
 
 Features overview:
+Middleware ordering: user-provided middleware wrap built-ins (outermost first).
 - Pluggable auth (static api key, dynamic bearer, custom signer)
 - Retry/backoff strategy with predicate
 - Middleware pipeline (timing, caching, metrics, etc.)
