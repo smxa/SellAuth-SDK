@@ -28,16 +28,17 @@ async function main() {
 
   try {
     const checkout = await client.checkout(shopId).create({
-      cart: [{ productId: 1, variantId: 1, quantity: 1 }],
+      cart: [{ productId: 448341, variantId: 655292, quantity: 1 }],
       gateway: 'STRIPE',
-      email: 'customer@example.com',
+      email: 'internal@illegal.wtf',
       // Optional: return_url, metadata, currency, etc.
     } as any); // Cast if local type doesn't include extra fields yet
 
-    console.log('Checkout created');
-    console.log(' id:', (checkout as any).id);
+    console.log('\nCheckout created');
+    console.log(' success:', (checkout as any).success);
+    console.log(' invoice id:', (checkout as any).invoice_id);
     console.log(' invoice URL:', (checkout as any).invoice_url);
-    console.log(' hosted URL:', (checkout as any).url);
+    console.log(' hosted URL:', (checkout as any).url || '(none)');
   } catch (e) {
     if (e instanceof SellAuthError) {
       console.error('SellAuth API error:', e.status, e.details);
