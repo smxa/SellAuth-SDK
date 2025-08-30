@@ -1,15 +1,8 @@
 # SellAuth Utils
 
-Open Source TypeScript SDK for the SellAuth API.
+Company-maintained TypeScript library for interacting with the SellAuth API (our digital goods marketplace provider). We use this package in our backend to manage our storefront operations and payment flows. It is published publicly to provide transparency and allow external auditing or reuse.
 
-Transparency note: This repository is published publicly for open-source transparency and auditability. It contains the actual client/runtime utilities used on the backend of https://illegal.wtf/ (WTF Services) – with only private configuration and secrets excluded. Publishing the code allows anyone to:
-
-- Inspect authentication, retry, pagination and middleware behavior.
-- Verify there is no hidden telemetry or unexpected network traffic.
-- Reproduce / debug issues seen in production.
-- Build compatible tooling or contribute improvements.
-
-TypeScript SDK for the SellAuth API.
+Powers our production backend at https://illegal.wtf/ (no private business logic or secrets included). Safe to reuse for other SellAuth integrations.
 
 Provides:
 
