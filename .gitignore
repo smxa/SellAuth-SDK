@@ -35,3 +35,4 @@ src/sdk/types/generated/*.ts
 # Misc
 .tmp/
 .cache/
+node_modules/
