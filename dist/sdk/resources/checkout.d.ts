@@ -1,5 +1,4 @@
-import { HttpClient } from '../core/http';
-import { AdvancedSellAuthClient } from '../client-advanced';
+import type { RequestFn } from '../core/types';
 export interface CheckoutSession {
     success: boolean;
     invoice_id: number;
@@ -10,6 +9,8 @@ export interface CheckoutSession {
 export declare class CheckoutAPI {
     private http;
     private shopId;
-    constructor(http: HttpClient | AdvancedSellAuthClient, shopId: number | string);
+    constructor(http: {
+        request: RequestFn;
+    }, shopId: number | string);
     create(payload: Record<string, any>): Promise<CheckoutSession>;
 }

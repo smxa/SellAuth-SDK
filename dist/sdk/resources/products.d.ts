@@ -1,5 +1,4 @@
-import { HttpClient } from '../core/http';
-import { AdvancedSellAuthClient } from '../client-advanced';
+import type { RequestFn } from '../core/types';
 export interface ProductVariant {
     id?: number;
     name?: string;
@@ -19,7 +18,9 @@ export interface Product {
 export declare class ProductsAPI {
     private http;
     private shopId;
-    constructor(http: HttpClient | AdvancedSellAuthClient, shopId: number | string);
+    constructor(http: {
+        request: RequestFn;
+    }, shopId: number | string);
     list(params?: Record<string, any>): Promise<Product[]>;
     create(payload: Record<string, any>): Promise<Product>;
     get(productId: number | string): Promise<Product>;
