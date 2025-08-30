@@ -141,7 +141,7 @@ Exports (index):
 
 - `SellAuthClient`
 - `AdvancedSellAuthClient`
-- Resource factories: `shops`, `products`, `invoices`, `checkout`
+- Resource factories: `shops`, `products`, `invoices`, `checkout`, `cryptoWallet`
 - Pagination: `paginateAll`, `fetchAllPages`, `fetchPages`
 - Errors: `SellAuthError`
 
@@ -210,3 +210,4 @@ MIT
 - API reference: `SellAuth-API.md`
 - Advanced configuration: `docs/advanced-config.md`
 - Middleware details: `docs/middleware.md`
+- Crypto / Wallet API: https://docs.sellauth.com/api-documentation/crypto--wallet

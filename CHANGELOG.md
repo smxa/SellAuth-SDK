@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Added
+
+- Crypto wallet payouts resource: `cryptoWallet(shopId)` with `getPayouts`, `getBalances`, `getTransactions`, `payout`.
+
 ## 0.3.1 - 2025-08-30
 
 ### Changed
