@@ -3,27 +3,24 @@ import type {
   NormalizedRequest,
   RequestOptions,
   SellAuthAdvancedConfig,
-} from "./core/config";
-import { normalizeConfig } from "./core/config";
-import { SellAuthError } from "./core/http";
+} from './core/config';
+import { normalizeConfig } from './core/config';
+import { SellAuthError } from './core/http';
 import {
   authMiddleware,
   loggerMiddleware,
   responseParsingMiddleware,
   retryMiddleware,
-} from "./core/middleware";
-import { fetchTransport } from "./core/transport";
+} from './core/middleware';
+import { fetchTransport } from './core/transport';
 
 // (Reserved for future hook expansion)
-
-
 
 // Unified interface so existing resource wrappers can accept either legacy HttpClient or advanced client
 export class AdvancedSellAuthClient {
   private config: ReturnType<typeof normalizeConfig>;
   private pipeline!: (_req: NormalizedRequest) => Promise<any>;
   // Removed duplicate request exposure to avoid conflicts; class method below is used for structural typing
-
 
   constructor(cfg: SellAuthAdvancedConfig) {
     this.config = normalizeConfig(cfg);
@@ -35,7 +32,7 @@ export class AdvancedSellAuthClient {
         auth: this.config.auth,
         apiKey: this.config.apiKey,
         logger: this.config.logger,
-      })
+      }),
     );
     if (this.config.logger) m.push(loggerMiddleware(this.config.logger));
     m.push(retryMiddleware(this.config.retry, this.config.logger));
@@ -45,39 +42,30 @@ export class AdvancedSellAuthClient {
     const builtIns = m;
     const chain = [...(this.config.middleware || []), ...builtIns];
     this.pipeline = chain.reduceRight((next, mw) => mw(next), transport);
-
   }
 
   private buildUrl(path: string, query?: Record<string, any>) {
-    let base = this.config.baseUrl.replace(/\/$/, "");
-    let full = path.startsWith("http")
-      ? path
-      : `${base}${path.startsWith("/") ? "" : "/"}${path}`;
+    let base = this.config.baseUrl.replace(/\/$/, '');
+    let full = path.startsWith('http') ? path : `${base}${path.startsWith('/') ? '' : '/'}${path}`;
     if (query && Object.keys(query).length) {
       const qs = Object.entries(query)
         .filter(([, v]) => v !== undefined && v !== null)
-        .map(
-          ([k, v]) =>
-            encodeURIComponent(k) + "=" + encodeURIComponent(String(v))
-        )
-        .join("&");
-      if (qs) full += (full.includes("?") ? "&" : "?") + qs;
+        .map(([k, v]) => encodeURIComponent(k) + '=' + encodeURIComponent(String(v)))
+        .join('&');
+      if (qs) full += (full.includes('?') ? '&' : '?') + qs;
     }
     return full;
   }
 
   // Core request method (advanced). Handles normalization and middleware pipeline invocation.
-  async request<T>(
-    method: string,
-    path: string,
-    opts: RequestOptions = {}
-  ): Promise<T> {
+  async request<T>(method: string, path: string, opts: RequestOptions = {}): Promise<T> {
     const url = this.buildUrl(path, opts.query);
     const headers: Record<string, string> = { ...(this.config.headers || {}) };
-    if (opts.headers) { // merge user headers
-      for (const [k,v] of Object.entries(opts.headers)) headers[k] = v;
+    if (opts.headers) {
+      // merge user headers
+      for (const [k, v] of Object.entries(opts.headers)) headers[k] = v;
     }
-    if (!Object.keys(headers).some(h => h.toLowerCase() === 'accept')) {
+    if (!Object.keys(headers).some((h) => h.toLowerCase() === 'accept')) {
       headers['Accept'] = 'application/json';
     }
     const req: NormalizedRequest = {
@@ -92,7 +80,12 @@ export class AdvancedSellAuthClient {
 
     if (opts.body !== undefined && opts.body !== null) {
       const b = opts.body as any;
-      const isForm = typeof FormData !== 'undefined' && b && typeof b === 'object' && typeof b.append === 'function' && (b.constructor?.name === 'FormData');
+      const isForm =
+        typeof FormData !== 'undefined' &&
+        b &&
+        typeof b === 'object' &&
+        typeof b.append === 'function' &&
+        b.constructor?.name === 'FormData';
       const isPlainObj = Object.prototype.toString.call(b) === '[object Object]';
       if (isForm) {
         req.body = b;
@@ -109,8 +102,7 @@ export class AdvancedSellAuthClient {
     try {
       if (this.config.beforeRequest) await this.config.beforeRequest({ ...req });
       const res: any = await this.pipeline(req);
-      if (this.config.afterResponse)
-        await this.config.afterResponse(res.data, req);
+      if (this.config.afterResponse) await this.config.afterResponse(res.data, req);
       return res.data as T;
     } catch (e: any) {
       if (e instanceof SellAuthError) throw e;
@@ -120,4 +112,4 @@ export class AdvancedSellAuthClient {
   }
 }
 
-export type { SellAuthAdvancedConfig } from "./core/config";
+export type { SellAuthAdvancedConfig } from './core/config';

@@ -1,14 +1,19 @@
 import { Transport, TransportResponseLike } from './config';
 
 // Compose multiple AbortSignals into one. Aborts if any aborts.
-function composeAbortSignal(signals: (AbortSignal | undefined)[], timeoutMs?: number): { signal: AbortSignal; cleanup(): void; timeoutId?: any } {
+function composeAbortSignal(
+  signals: (AbortSignal | undefined)[],
+  timeoutMs?: number,
+): { signal: AbortSignal; cleanup(): void; timeoutId?: any } {
   const controller = new AbortController();
   const onAbort = (s: AbortSignal) => {
     if (controller.signal.aborted) return;
     // Preserve reason where supported
     try {
       // @ts-ignore
-      controller.abort((s as any).reason || new Error(s.reason instanceof Error ? s.reason.message : 'Aborted'));
+      controller.abort(
+        (s as any).reason || new Error(s.reason instanceof Error ? s.reason.message : 'Aborted'),
+      );
     } catch {
       controller.abort();
     }
@@ -16,7 +21,10 @@ function composeAbortSignal(signals: (AbortSignal | undefined)[], timeoutMs?: nu
   const listeners: Array<{ s: AbortSignal; fn: any }> = [];
   for (const s of signals) {
     if (!s) continue;
-    if (s.aborted) { onAbort(s); break; }
+    if (s.aborted) {
+      onAbort(s);
+      break;
+    }
     const fn = () => onAbort(s);
     s.addEventListener('abort', fn);
     listeners.push({ s, fn });
@@ -25,7 +33,11 @@ function composeAbortSignal(signals: (AbortSignal | undefined)[], timeoutMs?: nu
   if (timeoutMs && !controller.signal.aborted) {
     timeoutId = setTimeout(() => {
       if (!controller.signal.aborted) {
-        try { controller.abort(new Error(`Timeout after ${timeoutMs}ms`)); } catch { controller.abort(); }
+        try {
+          controller.abort(new Error(`Timeout after ${timeoutMs}ms`));
+        } catch {
+          controller.abort();
+        }
       }
     }, timeoutMs);
   }

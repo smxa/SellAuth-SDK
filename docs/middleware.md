@@ -3,6 +3,7 @@
 This document expands on the built‑in middleware supplied by `AdvancedSellAuthClient`.
 
 Order (outer → inner) when constructing the default pipeline (user middleware wrap built-ins):
+
 1. `authMiddleware`
 2. `loggerMiddleware` (only if `logger` provided)
 3. `retryMiddleware`
@@ -12,14 +13,18 @@ Order (outer → inner) when constructing the default pipeline (user middleware 
 Because the chain array places user middleware first and composition uses `reduceRight`, user middleware execute outermost (before auth). To inspect the raw transport response before parsing, use a custom transport or provide your own chain ordering. Default placement lets them see the request before auth header injection; if you inject custom auth headers earlier, place that logic in user middleware or override ordering.
 
 ## Auth Middleware
+
 Adds `Authorization` header.
 Modes:
+
 - `apiKey` (default) — header `Authorization: Bearer <apiKey>`.
 - `bearer` — obtains token via `bearer()` function each request (supports rotation/refresh).
 - `custom` — calls `authorize(req)`; you mutate `req.headers` yourself.
 
 ## Logger Middleware
+
 Uses the provided `logger` (e.g. `console`) to emit debug lines:
+
 - `request` with method/url/headers
 - `response` with status and timing
 - `error` on thrown errors
@@ -27,14 +32,17 @@ Uses the provided `logger` (e.g. `console`) to emit debug lines:
 Implement only the levels you care about (`debug`, `error`, etc.).
 
 ## Retry Middleware
+
 Implements bounded retry with optional exponential backoff.
 Key behaviors:
+
 - Retries network errors automatically (thrown exceptions).
 - Retries HTTP statuses in configured `statusCodes` set if method is in `methods`.
 - Optional custom `retryOn({ attempt, response, error, request })` to fully control.
 - Backoff calculation: `delay = baseDelayMs * factor^attempt` (+ ~20% jitter) capped by `maxDelayMs`.
 
 Example customizing predicate:
+
 ```ts
 retries: {
   attempts: 6,
@@ -47,13 +55,16 @@ retries: {
 ```
 
 ## Response Parsing Middleware
+
 - Reads response text once.
 - Parses JSON unless `responseType` is `text` or `raw`.
 - Throws `SellAuthError` for non-2xx with parsed body (if parseable) in `details`.
 - Returns object enriched with `data` containing parsed payload.
 
 ## Writing Custom Middleware
+
 Signature:
+
 ```ts
 import { Middleware } from 'sellauth-utils';
 
@@ -66,9 +77,11 @@ const myMiddleware: Middleware = (next) => async (req) => {
 ```
 
 Insert via config:
+
 ```ts
 new AdvancedSellAuthClient({ middleware: [myMiddleware] });
 ```
 
 ## Caching Example
+
 See `examples/caching-middleware.ts` for an end‑to‑end example demonstrating a simple in‑memory GET cache with TTL.

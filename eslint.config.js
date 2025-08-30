@@ -7,7 +7,7 @@ import prettier from 'eslint-config-prettier/flat';
 
 export default [
   {
-    ignores: ['dist/**','node_modules/**','**/*.d.ts'],
+    ignores: ['dist/**', 'node_modules/**', '**/*.d.ts'],
   },
   js.configs.recommended,
   prettier,
@@ -27,14 +27,12 @@ export default [
         FormData: 'readonly',
         File: 'readonly',
         Blob: 'readonly',
-        Response: 'readonly'
+        Response: 'readonly',
       },
     },
     // TS plugin omitted for now; add later when full preset desired
     rules: {
       'no-unused-vars': ['warn', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
-      
-      
-    }
-  }
+    },
+  },
 ];
