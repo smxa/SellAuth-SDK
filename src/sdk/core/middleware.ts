@@ -45,7 +45,7 @@ const DEFAULT_SENSITIVE_HEADERS = new Set([
 
 export interface LoggerSanitizeOptions {
   sensitiveHeaders?: Iterable<string>;
-  mask?: string | ((name: string, value: string) => string);
+  mask?: string | ((_name: string, _value: string) => string);
   allowlist?: Iterable<string>; // headers to NOT redact even if sensitive
 }
 
@@ -62,7 +62,7 @@ function sanitizeHeaders(
   for (const [k, v] of Object.entries(headers || {})) {
     const lk = k.toLowerCase();
     if (sensitive.has(lk) && !allow.has(lk)) {
-      if (typeof mask === 'function') out[k] = mask(lk, typeof v === 'string' ? v : String(v));
+      if (typeof mask === 'function') out[k] = mask(lk, typeof v === 'string' ? v : String(v)); // mask fn may ignore args
       else if (typeof v === 'string' && v.length > 12 && mask === '[REDACTED]')
         out[k] = `[REDACTED:${v.slice(-4)}]`;
       else out[k] = mask;
