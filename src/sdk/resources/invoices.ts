@@ -1,9 +1,10 @@
 import { HttpClient } from '../core/http';
+import { AdvancedSellAuthClient } from '../client-advanced';
 
 export interface Invoice { id: number; status?: string; total?: number; currency?: string; [k: string]: any; }
 
 export class InvoicesAPI {
-  constructor(private http: HttpClient, private shopId: number | string) {}
+  constructor(private http: HttpClient | AdvancedSellAuthClient, private shopId: number | string) {}
   list(filters?: Record<string, any>) { return this.http.request<Invoice[]>('GET', `/shops/${this.shopId}/invoices`, { query: filters }); }
   get(invoiceId: number | string) { return this.http.request<Invoice>('GET', `/shops/${this.shopId}/invoices/${invoiceId}`); }
   archive(invoiceId: number | string) { return this.http.request<any>('POST', `/shops/${this.shopId}/invoices/${invoiceId}/archive`); }

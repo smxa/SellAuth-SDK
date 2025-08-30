@@ -3,6 +3,7 @@ import { fetchTransport } from './core/transport';
 import { authMiddleware, loggerMiddleware, retryMiddleware, responseParsingMiddleware } from './core/middleware';
 import { SellAuthError } from './core/http';
 
+// Unified interface so existing resource wrappers can accept either legacy HttpClient or advanced client
 export class AdvancedSellAuthClient {
   private config = normalizeConfig({});
   private pipeline: (req: NormalizedRequest) => Promise<any>;

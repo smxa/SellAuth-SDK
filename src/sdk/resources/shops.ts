@@ -1,4 +1,5 @@
 import { HttpClient } from '../core/http';
+import { AdvancedSellAuthClient } from '../client-advanced';
 
 export interface Shop {
   id: number;
@@ -10,8 +11,8 @@ export interface Shop {
 }
 
 export class ShopsAPI {
-  constructor(private http: HttpClient) {}
-  list() { return this.http.request<Shop[]>('GET', '/shops'); }
+  constructor(private http: HttpClient | AdvancedSellAuthClient) {}
+  list() { return (this.http as any).request('GET', '/shops') as Promise<Shop[]>; }
   get(shopId: number | string) { return this.http.request<Shop>('GET', `/shops/${shopId}`); }
   stats(shopId: number | string) { return this.http.request<any>('GET', `/shops/${shopId}/stats`); }
   create(data: { name: string; subdomain: string; logo?: File | Blob }): Promise<Shop> {

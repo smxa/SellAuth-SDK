@@ -1,10 +1,11 @@
 import { HttpClient } from '../core/http';
+import { AdvancedSellAuthClient } from '../client-advanced';
 
 export interface ProductVariant { id?: number; name?: string; price?: number; stock?: number; [k: string]: any; }
 export interface Product { id: number; name: string; type?: string; currency?: string; visibility?: string; variants?: ProductVariant[]; [k: string]: any; }
 
 export class ProductsAPI {
-  constructor(private http: HttpClient, private shopId: number | string) {}
+  constructor(private http: HttpClient | AdvancedSellAuthClient, private shopId: number | string) {}
 
   list(params?: Record<string, any>) { return this.http.request<Product[]>('GET', `/shops/${this.shopId}/products`, { query: params }); }
   create(payload: Record<string, any>) { return this.http.request<Product>('POST', `/shops/${this.shopId}/products`, { body: payload }); }

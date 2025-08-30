@@ -1,4 +1,5 @@
 import { HttpClient } from '../core/http';
+import { AdvancedSellAuthClient } from '../client-advanced';
 
 export interface CheckoutSession {
   success: boolean;
@@ -9,6 +10,6 @@ export interface CheckoutSession {
 }
 
 export class CheckoutAPI {
-  constructor(private http: HttpClient, private shopId: number | string) {}
+  constructor(private http: HttpClient | AdvancedSellAuthClient, private shopId: number | string) {}
   create(payload: Record<string, any>) { return this.http.request<CheckoutSession>('POST', `/shops/${this.shopId}/checkout`, { body: payload }); }
 }
