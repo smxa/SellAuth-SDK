@@ -28,7 +28,7 @@ async function main() {
 
   try {
     const checkout = await client.checkout(shopId).create({
-      cart: [{ productId: 448341, variantId: 655292, quantity: 1 }],
+      cart: [{ productId: 1, variantId: 1, quantity: 1 }],
       gateway: 'STRIPE',
       email: 'customer@example.com',
       // Optional: return_url, metadata, currency, etc.
