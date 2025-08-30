@@ -30,7 +30,8 @@ export const loggerMiddleware = (logger: any): Middleware => (next: Transport) =
 
 export const retryMiddleware = (retry: RetryOptions, logger?: any): Middleware => (next: Transport) => async (req) => {
   const attempts = Math.max(1, retry.attempts ?? 1);
-  let attempt = 0; let lastError: any;
+  let attempt = 0;
+  let lastError: any;
   while (attempt < attempts) {
     try {
       const res = await next(req);
