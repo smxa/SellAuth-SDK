@@ -1,4 +1,5 @@
 import { HttpClient } from '../core/http';
+import { AdvancedSellAuthClient } from '../client-advanced';
 export interface Invoice {
     id: number;
     status?: string;
@@ -9,7 +10,7 @@ export interface Invoice {
 export declare class InvoicesAPI {
     private http;
     private shopId;
-    constructor(http: HttpClient, shopId: number | string);
+    constructor(http: HttpClient | AdvancedSellAuthClient, shopId: number | string);
     list(filters?: Record<string, any>): Promise<Invoice[]>;
     get(invoiceId: number | string): Promise<Invoice>;
     archive(invoiceId: number | string): Promise<any>;

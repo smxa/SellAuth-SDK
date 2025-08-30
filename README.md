@@ -133,8 +133,33 @@ SELLAUTH_TOKEN=... node --loader tsx examples/usage.ts
 - CI pipeline for build & tests.
 - Bulk operation helpers (batch updates, concurrency controls).
 
+## Advanced Usage (Configurable Client)
+For richer capabilities (dynamic auth, custom retries, middleware, hooks, custom transport) use `AdvancedSellAuthClient`.
+
+Quick sample:
+```ts
+import { AdvancedSellAuthClient } from './dist';
+const client = new AdvancedSellAuthClient({
+  apiKey: process.env.SELLAUTH_TOKEN,
+  retries: { attempts: 5, backoff: 'exponential', baseDelayMs: 250 },
+  beforeRequest: r => console.log('->', r.method, r.url),
+  afterResponse: (_d, r) => console.log('<-', r.method, r.url),
+  logger: console,
+});
+const shops = await client.request('GET', '/shops');
+```
+
+Features overview:
+- Pluggable auth (static api key, dynamic bearer, custom signer)
+- Retry/backoff strategy with predicate
+- Middleware pipeline (timing, caching, metrics, etc.)
+- Lifecycle hooks (beforeRequest / afterResponse)
+- Custom transport (swap fetch, add circuit breaking, tracing)
+
+See detailed docs: `docs/advanced-config.md` and `docs/middleware.md`.
+
 ## Documentation
-See `SellAuth-API.md` for endpoint inventory and original doc links.
+See `SellAuth-API.md` for endpoint inventory and original doc links. For advanced configuration details see `docs/advanced-config.md`.
 
 ---
 Internal use only.

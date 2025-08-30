@@ -1,4 +1,4 @@
-// Using native fetch (Node 18+ / browsers). No external fetch polyfill.
+// Deprecated minimalist HttpClient retained for backwards compatibility. New configurable pipeline lives in advanced-client.ts
 export class SellAuthError extends Error {
     status;
     code;
