@@ -8,7 +8,7 @@ export class SellAuthClient {
   readonly http: HttpClient;
   readonly shops: ShopsAPI;
 
-  constructor(private opts: SellAuthClientOptions) {
+  constructor(private opts: SellAuthClientOptions) { /* retained for backwards compatibility */
     this.http = new HttpClient(opts);
     this.shops = new ShopsAPI(this.http);
   }
