@@ -9,7 +9,7 @@ Provides:
 ## Good Faith Stuff
 
 - Community first: so you don’t have to re‑build a SellAuth SDK from scratch.
-- MIT licensed: permissive—copy, modify, ship.
+- MIT licensed: permissive-copy, modify, ship.
 - Transparent: no hidden telemetry; what you see is what runs.
 - Practical: pagination, retries, middleware all battle-tested in production.
 - Lean: focused surface area; contributions that keep it tight are welcome.
