@@ -1,0 +1,90 @@
+name: Publish
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.12.0
+          run_install: false
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Verify pnpm
+        run: pnpm --version
+
+      - name: Read version from package.json
+        id: pkg
+        run: echo "version=$(jq -r .version package.json)" >> $GITHUB_OUTPUT
+
+      - name: Verify tag matches package version
+        run: |
+          TAG="${GITHUB_REF_NAME}"
+          VERSION="${{ steps.pkg.outputs.version }}"
+          if [[ ! $TAG =~ ^v ]]; then
+            echo "Tag $TAG does not start with v" >&2; exit 1; fi
+          if [[ "v$VERSION" != "$TAG" ]]; then
+            echo "Tag/version mismatch: tag=$TAG package.json=$VERSION" >&2; exit 1; fi
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        run: pnpm run build
+
+      - name: Check if version already published
+        id: published
+        run: |
+          set +e
+          if npm view @wtfservices/sellauth-utils@${{ steps.pkg.outputs.version }} version >/dev/null 2>&1; then
+            echo "already=true" >> $GITHUB_OUTPUT
+          else
+            echo "already=false" >> $GITHUB_OUTPUT
+          fi
+          set -e
+
+      - name: Skip already published
+        if: steps.published.outputs.already == 'true'
+        run: echo "Version already on npm, skipping publish."
+
+      - name: Publish
+        if: steps.published.outputs.already == 'false'
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          pnpm publish --access public --no-git-checks
+
+      - name: Show published tarball
+        if: steps.published.outputs.already == 'false'
+        run: ls -1 *.tgz || echo 'No tarball in root'
+
+      - name: Upload package artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: npm-package-${{ steps.pkg.outputs.version }}
+          path: |
+            dist/**
+            package.json
+            README.md
+            LICENSE
+            *.tgz
