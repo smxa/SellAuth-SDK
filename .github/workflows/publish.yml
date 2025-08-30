@@ -20,8 +20,15 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: 9.12.0
+          version: 10.15.0
           run_install: false
+
+      - name: Verify NPM token present
+        run: |
+          if [ -z "${{ secrets.NPM_TOKEN }}" ]; then
+            echo 'NPM_TOKEN secret not configured' >&2
+            exit 1
+          fi
 
       - name: Setup Node
         uses: actions/setup-node@v4

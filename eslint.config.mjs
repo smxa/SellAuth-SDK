@@ -7,7 +7,7 @@ import prettier from 'eslint-config-prettier/flat';
 
 export default [
   {
-    ignores: ['dist/**', 'node_modules/**', '**/*.d.ts'],
+    ignores: ['dist/**', 'node_modules/**', '**/*.d.ts', 'coverage/**', 'build/**'],
   },
   js.configs.recommended,
   prettier,
