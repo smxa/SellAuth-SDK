@@ -1,10 +1,11 @@
 # Changelog
 
-## Unreleased
+## 0.2.1 - 2025-08-30
 
 ### Changed
 - Retry: switched to symmetric jitter (±20%) for exponential backoff to better distribute retries.
 - Logging: `loggerMiddleware` now redacts sensitive headers by default (Authorization, API keys, cookies). Added options for custom sensitive headers, allowlist, and mask function.
+- README overhauled for public release (install, security, advanced usage, release process).
 
 ## 0.2.0 - 2025-08-30
 
