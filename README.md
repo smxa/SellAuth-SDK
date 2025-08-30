@@ -38,7 +38,7 @@ yarn add @wtfservices/sellauth-utils
 
 ## Quick Start
 
-Full structured resource & type reference: `docs/SDK.md` | Core REST endpoint list: `docs/API.md`
+Full structured resource & type reference: [SDK Docs](./docs/SDK.md) | Core REST endpoint list: [API Endpoints](./docs/API.md)
 
 ```ts
 import { SellAuthClient } from '@wtfservices/sellauth-utils';
@@ -125,7 +125,7 @@ Features:
 - Hooks: `beforeRequest` / `afterResponse`
 - Custom transport (swap fetch, add tracing, circuit breaking)
 
-See: `docs/advanced-config.md`, `docs/middleware.md`.
+See: [advanced configuration](./docs/advanced-config.md), [middleware](./docs/middleware.md).
 
 ## Pagination Helpers
 
@@ -147,7 +147,7 @@ Exports (index):
 - Pagination: `paginateAll`, `fetchAllPages`, `fetchPages`
 - Errors: `SellAuthError`
 
-Consult `docs/SDK.md` for full resource & endpoint reference.
+Consult [SDK Docs](./docs/SDK.md) for full resource & endpoint reference.
 
 ## Security
 
@@ -209,7 +209,7 @@ MIT
 
 ## Additional Docs
 
-- Full API reference: `docs/SDK.md` (types + SDK)
-- Raw endpoint list: `docs/API.md`
-- Advanced configuration: `docs/advanced-config.md`
-- Middleware details: `docs/middleware.md`
+- Full API reference: [SDK Docs](./docs/SDK.md) (types + SDK)
+- Raw endpoint list: [API Endpoints](./docs/API.md)
+- Advanced configuration: [advanced configuration](./docs/advanced-config.md)
+- Middleware details: [middleware](./docs/middleware.md)
