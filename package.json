@@ -1,10 +1,47 @@
 {
   "name": "sellauth-utils",
   "version": "0.2.1",
+  "description": "TypeScript SDK for the SellAuth API (resources, advanced client, pagination, middleware).",
+  "license": "MIT",
+  "author": "Alex Marshall <business@illegal.wtf>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/smxa/SellAuth-SDK.git"
+  },
+  "bugs": {
+    "url": "https://github.com/smxa/SellAuth-SDK/issues"
+  },
+  "homepage": "https://github.com/smxa/SellAuth-SDK#readme",
+  "keywords": [
+    "sellauth",
+    "sdk",
+    "api",
+    "payments",
+    "typescript",
+    "middleware",
+    "pagination"
+  ],
   "type": "module",
   "main": "dist/index.cjs",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
+  ],
+  "sideEffects": false,
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "prepare": "npm run build",
