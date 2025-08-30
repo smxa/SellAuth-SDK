@@ -15,20 +15,15 @@ Status: Public release candidate.
 - TypeScript 5.x (development only)
 
 ## Installation
-
 ```bash
 npm install sellauth-utils
 ```
-
 (Adjust name if published under a different package scope.)
 
 ## Quick Start
-
 ```ts
 import { SellAuthClient } from 'sellauth-utils';
-
 const client = new SellAuthClient({ apiKey: process.env.SELLAUTH_TOKEN! });
-
 const shops = await client.shops.list();
 console.log(shops);
 ```
@@ -41,7 +36,6 @@ const products = await client.products(shopId).list({ page: 1, perPage: 20 });
 ### Collect all products
 ```ts
 import { fetchAllPages } from 'sellauth-utils';
-
 const all = await fetchAllPages(
   ({ page, perPage }) => client.products(shopId).list({ page, perPage }),
   { pageSize: 100 },
@@ -51,7 +45,6 @@ const all = await fetchAllPages(
 ### Stream products
 ```ts
 import { paginateAll } from 'sellauth-utils';
-
 for await (const product of paginateAll(
   ({ page, perPage }) => client.products(shopId).list({ page, perPage }),
   { pageSize: 50 },
@@ -73,7 +66,6 @@ console.log(session.invoice_url, session.url);
 ### Error handling
 ```ts
 import { SellAuthError } from 'sellauth-utils';
-
 try {
   await client.products(shopId).list({ page: 1, perPage: 10 });
 } catch (e) {
@@ -86,12 +78,9 @@ try {
 ```
 
 ## Advanced Client
-
 Use `AdvancedSellAuthClient` for dynamic auth, custom retry/backoff strategies, lifecycle hooks, custom transport, and middleware extensibility.
-
 ```ts
 import { AdvancedSellAuthClient } from 'sellauth-utils';
-
 const client = new AdvancedSellAuthClient({
   apiKey: process.env.SELLAUTH_TOKEN,
   retries: { attempts: 5, backoff: 'exponential', baseDelayMs: 250 },
@@ -99,10 +88,8 @@ const client = new AdvancedSellAuthClient({
   afterResponse: (_d, r) => console.log('<-', r.method, r.url),
   logger: console,
 });
-
 const shops = await client.request('GET', '/shops');
 ```
-
 Features:
 - Pluggable auth (static api key, dynamic bearer, custom signer)
 - Configurable retries with symmetric jittered exponential backoff & predicate
@@ -186,3 +173,66 @@ Specify license (e.g. MIT) in a `LICENSE` file before public publish.
 ---
 
 Ready for public consumption pending license and publish decision.
+
+=======
+
+(If variable name is `SELLAUTH_TOKEN`, adjust accordingly.)
+
+## Extending the SDK
+
+1. Add a new file in `src/sdk/resources/` (e.g., `coupons.ts`).
+2. Implement a class taking `HttpClient` + required path parameters.
+3. Export in `src/sdk/resources/index.ts` and re-export via `src/index.ts`.
+4. (Optional) Add example usage in `examples/`.
+
+## Troubleshooting
+
+- Type errors around `fetch`: ensure Node >= 18 and `lib` in tsconfig includes `DOM` (already set).
+- Requests timing out: adjust `timeoutMs` or `maxRetries` in `SellAuthClient` options.
+- 401 errors: verify API key is valid/current.
+
+## Next Steps / Ideas
+
+- Add remaining resources (coupons, customers, tickets, payment methods).
+- Stronger types (derive from future OpenAPI spec).
+- Unit tests (HttpClient + pagination) with mocked fetch.
+- CI pipeline for build & tests.
+- Bulk operation helpers (batch updates, concurrency controls).
+
+## Advanced Usage (Configurable Client)
+
+For richer capabilities (dynamic auth, custom retries, middleware, hooks, custom transport) use `AdvancedSellAuthClient`.
+
+Quick sample:
+
+```ts
+import { AdvancedSellAuthClient } from './dist';
+const client = new AdvancedSellAuthClient({
+  apiKey: process.env.SELLAUTH_TOKEN,
+  retries: { attempts: 5, backoff: 'exponential', baseDelayMs: 250 },
+  beforeRequest: (r) => console.log('->', r.method, r.url),
+  afterResponse: (_d, r) => console.log('<-', r.method, r.url),
+  logger: console,
+});
+const shops = await client.request('GET', '/shops');
+```
+
+Features overview:
+Middleware ordering: user-provided middleware wrap built-ins (outermost first).
+
+- Pluggable auth (static api key, dynamic bearer, custom signer)
+- Retry/backoff strategy with predicate
+- Middleware pipeline (timing, caching, metrics, etc.)
+- Lifecycle hooks (beforeRequest / afterResponse)
+- Custom transport (swap fetch, add circuit breaking, tracing)
+
+See detailed docs: `docs/advanced-config.md` and `docs/middleware.md`.
+
+## Documentation
+
+See `SellAuth-API.md` for endpoint inventory and original doc links. For advanced configuration details see `docs/advanced-config.md`.
+
+---
+
+Internal use only.
+>>>>>>> origin/main

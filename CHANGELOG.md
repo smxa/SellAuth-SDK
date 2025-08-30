@@ -25,10 +25,13 @@
 
 - README: Added Advanced Usage section linking to new docs.
 
+
 ### Notes
 
 - Backwards compatible: existing `SellAuthClient` usage unchanged.
 - Lint cleanup (removed unused vars) and clarified middleware ordering docs.
+
+
 - No runtime breaking changes; minor version bump per semver for additive features.
 
 - Fix: Middleware ordering now runs built-ins before user middleware (auth→logger→retry→responseParsing→user). Previously user middleware executed first; update any middleware relying on pre-auth access.
