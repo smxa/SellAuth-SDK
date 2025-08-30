@@ -38,7 +38,7 @@ yarn add @wtfservices/sellauth-utils
 
 ## Quick Start
 
-Full structured resource & type reference: `docs/SDK.md`
+Full structured resource & type reference: `docs/SDK.md` | Core REST endpoint list: `docs/API.md`
 
 ```ts
 import { SellAuthClient } from '@wtfservices/sellauth-utils';
@@ -209,7 +209,7 @@ MIT
 
 ## Additional Docs
 
-- Full API reference: `docs/SDK.md`
+- Full API reference: `docs/SDK.md` (types + SDK)
+- Raw endpoint list: `docs/API.md`
 - Advanced configuration: `docs/advanced-config.md`
 - Middleware details: `docs/middleware.md`
-- Crypto / Wallet API: https://docs.sellauth.com/api-documentation/crypto--wallet
