@@ -38,6 +38,8 @@ yarn add @wtfservices/sellauth-utils
 
 ## Quick Start
 
+Full structured resource & type reference: `docs/SDK.md`
+
 ```ts
 import { SellAuthClient } from '@wtfservices/sellauth-utils';
 const client = new SellAuthClient({ apiKey: process.env.SELLAUTH_TOKEN! });
@@ -145,7 +147,7 @@ Exports (index):
 - Pagination: `paginateAll`, `fetchAllPages`, `fetchPages`
 - Errors: `SellAuthError`
 
-Consult `SellAuth-API.md` for endpoint inventory.
+Consult `docs/SDK.md` for full resource & endpoint reference.
 
 ## Security
 
@@ -207,7 +209,7 @@ MIT
 
 ## Additional Docs
 
-- API reference: `SellAuth-API.md`
+- Full API reference: `docs/SDK.md`
 - Advanced configuration: `docs/advanced-config.md`
 - Middleware details: `docs/middleware.md`
 - Crypto / Wallet API: https://docs.sellauth.com/api-documentation/crypto--wallet
