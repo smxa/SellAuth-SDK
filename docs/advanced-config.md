@@ -89,12 +89,14 @@ auth: {
 - `afterResponse(data, req)` — emit metrics, logging, caching, tracing end.
 
 ### Middleware Pipeline
-Built‑ins (outer → inner) actual execution order (user supplied middleware wrap these and run BEFORE auth):
+Pipeline composition: user middleware (if any) are placed before the built‑ins in the chain array and the chain is composed with `reduceRight` ending at the transport. This makes user middleware OUTERMOST. Effective order (outer → inner):
 1. `authMiddleware`
 2. `loggerMiddleware` (only if `logger` provided)
 3. `retryMiddleware`
 4. `responseParsingMiddleware`
-5. Your custom `middleware[]` (added outermost so they see the request before built-ins and the raw response before parsing). You can change ordering by composing manually (see below).
+5. Your custom `middleware[]` (added outermost so they see the request before built-ins and can observe the response prior to parsing if they short‑circuit or you customize the chain).
+
+To fully customize ordering, supply your own composed transport or open an issue to discuss additional ordering controls.
 
 Custom middleware signature:
 ```ts

@@ -20,7 +20,6 @@
 
 ### Notes / Internal
 
-
 - Backwards compatible: existing `SellAuthClient` usage unchanged.
-- Internal: tightened lint (no unused vars), clarified middleware ordering docs.
+- Internal: lint cleanup (removed unused vars) and clarified middleware ordering docs.
 - No runtime breaking changes; minor version bump per semver for additive features.

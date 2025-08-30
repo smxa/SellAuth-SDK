@@ -9,7 +9,7 @@ Order (outer → inner) when constructing the default pipeline (user middleware 
 4. `responseParsingMiddleware`
 5. Custom `middleware[]` (user supplied)
 
-Because composition reduces right with user middleware placed first in the chain array, user middleware executes outermost (before auth) and can still observe the raw response (before parsing) only by supplying a custom transport or reordering. The default placement means they see the request pre‑auth header injection; prefer placing auth concerns in a dedicated custom middleware if overriding ordering.
+Because the chain array places user middleware first and composition uses `reduceRight`, user middleware execute outermost (before auth). To inspect the raw transport response before parsing, use a custom transport or provide your own chain ordering. Default placement lets them see the request before auth header injection; if you inject custom auth headers earlier, place that logic in user middleware or override ordering.
 
 ## Auth Middleware
 Adds `Authorization` header.
