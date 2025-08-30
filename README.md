@@ -1,10 +1,18 @@
 # SellAuth Utils
 
-Company-maintained TypeScript library for interacting with the SellAuth API (our digital goods marketplace provider). We use this package in our backend to manage our storefront operations and payment flows. It is published publicly to provide transparency and allow external auditing or reuse.
+Company-built TypeScript library for talking to the SellAuth API (our digital goods marketplace provider). We looked for a solid, ergonomic SellAuth client—couldn't find one—so we wrote it.
 
-Powers our production backend at https://illegal.wtf/ (no private business logic or secrets included). Safe to reuse for other SellAuth integrations.
+Open sourced under MIT for the greater good of the internet: this is (minus private config) the same code running on https://illegal.wtf/ to manage our storefront + payments. Use it, fork it, improve it.
 
 Provides:
+
+## Good Faith Stuff
+
+- Community first: so you don’t have to re‑build a SellAuth SDK from scratch.
+- MIT licensed: permissive—copy, modify, ship.
+- Transparent: no hidden telemetry; what you see is what runs.
+- Practical: pagination, retries, middleware all battle-tested in production.
+- Lean: focused surface area; contributions that keep it tight are welcome.
 
 - Lightweight HTTP client and resource wrappers (shops, products, invoices, checkout)
 - Advanced configurable client with middleware, retries, hooks, custom transport
