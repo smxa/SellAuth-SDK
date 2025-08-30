@@ -182,61 +182,129 @@ export interface SortProductsRequest {
   sortedIds: any[]; // API returns object array; keep generic
 }
 
+/**
+ * Bulk update disabled payment methods for selected products.
+ * Endpoint: PUT /shops/:shopId/products/bulk-update/disabled-payment-methods
+ * Provide a selector object describing which product ids to target in product_ids (API supports complex selection: all, ids array, filters etc.).
+ * If disabled_payment_method_ids is null or empty array, previously disabled methods may be cleared by the API.
+ */
 export interface BulkDisabledPaymentMethodsRequest extends BulkSelector {
   disabled_payment_method_ids?: string[] | null;
 }
+/**
+ * Bulk update custom field associations on products.
+ * Endpoint: PUT /shops/:shopId/products/bulk-update/custom-fields
+ * Pass custom_field_ids as an array of field identifiers, or null to clear.
+ */
 export interface BulkCustomFieldsRequest extends BulkSelector {
   custom_field_ids?: string[] | null;
 }
+/**
+ * Bulk enable/disable Discord integration & roles.
+ * Endpoint: PUT /shops/:shopId/products/bulk-update/discord-integration
+ * When discord_required is true you may supply discord_roles. Null to clear roles.
+ */
 export interface BulkDiscordIntegrationRequest extends BulkSelector {
   discord_required?: boolean;
   discord_roles?: DiscordRole[] | null;
 }
 export type BulkPrependAppendType = 'overwrite' | 'append' | 'prepend';
+/**
+ * Bulk modify product descriptions with overwrite/append/prepend semantics.
+ * Endpoint: PUT /shops/:shopId/products/bulk-update/description
+ */
 export interface BulkDescriptionRequest extends BulkSelector {
   type: BulkPrependAppendType;
   description?: string | null;
 }
+/**
+ * Bulk update product instructions (overwrite only semantics).
+ * Endpoint: PUT /shops/:shopId/products/bulk-update/instructions
+ */
 export interface BulkInstructionsRequest extends BulkSelector {
   instructions?: string | null;
 }
+/**
+ * Bulk update out-of-stock message shown when product has no deliverables/stock.
+ * Endpoint: PUT /shops/:shopId/products/bulk-update/out-of-stock-message
+ */
 export interface BulkOutOfStockMessageRequest extends BulkSelector {
   out_of_stock_message?: string | null;
 }
+/**
+ * Bulk toggle security related flags (e.g. VPN blocking) on products.
+ * Endpoint: PUT /shops/:shopId/products/bulk-update/security
+ */
 export interface BulkSecurityRequest extends BulkSelector {
   block_vpn?: boolean;
 }
+/**
+ * Bulk modify badges with overwrite/append/prepend semantics.
+ * Endpoint: PUT /shops/:shopId/products/bulk-update/badges
+ */
 export interface BulkBadgesRequest extends BulkSelector {
   type: BulkPrependAppendType;
   product_badges?: ProductBadge[] | null;
 }
+/**
+ * Bulk update custom status banner (color/text) across products.
+ * Endpoint: PUT /shops/:shopId/products/bulk-update/status
+ */
 export interface BulkStatusRequest extends BulkSelector {
   status_color?: string | null;
   status_text?: string | null;
 }
+/**
+ * Bulk change visibility state of products (public/unlisted/private/on_hold).
+ * Endpoint: PUT /shops/:shopId/products/bulk-update/visibility
+ */
 export interface BulkVisibilityRequest extends BulkSelector {
   visibility: ProductVisibility;
 }
+/**
+ * Bulk toggle live statistics display settings.
+ * Endpoint: PUT /shops/:shopId/products/bulk-update/live-stats
+ */
 export interface BulkLiveStatsRequest extends BulkSelector {
   show_views_count?: boolean;
   show_sales_count?: boolean;
   show_sales_notifications?: boolean;
   sales_count_hours?: number;
 }
+/**
+ * Bulk associate or remove feedback coupon incentivization settings.
+ * Endpoint: PUT /shops/:shopId/products/bulk-update/feedback-coupon
+ */
 export interface BulkFeedbackCouponRequest extends BulkSelector {
   feedback_coupon_id?: string | null;
   feedback_coupon_min_rating?: number;
 }
+/**
+ * Bulk set or clear volume discount tiers.
+ * Endpoint: PUT /shops/:shopId/products/bulk-update/volume-discounts
+ */
 export interface BulkVolumeDiscountsRequest extends BulkSelector {
   volume_discounts?: ProductVolumeDiscountTier[] | null;
   disable_volume_discounts_if_coupon?: boolean;
 }
+/**
+ * Bulk set or clear redirect URL used after purchase.
+ * Endpoint: PUT /shops/:shopId/products/bulk-update/redirect-url
+ */
 export interface BulkRedirectUrlRequest extends BulkSelector {
   redirect_url?: string | null;
 }
+/**
+ * Bulk change deliverables type (serials/service/dynamic).
+ * Endpoint: PUT /shops/:shopId/products/bulk-update/deliverables-type
+ */
 export interface BulkDeliverablesTypeRequest extends BulkSelector {
   deliverables_type?: ProductDeliverablesType;
 }
+/**
+ * Bulk set deliverables label text (e.g. license key, credentials).
+ * Endpoint: PUT /shops/:shopId/products/bulk-update/deliverables-label
+ */
 export interface BulkDeliverablesLabelRequest extends BulkSelector {
   deliverables_label: string;
 }
@@ -326,6 +394,11 @@ export class ProductsAPI {
   }
 
   /** Sort products & groups */
+  /**
+   * Sort products and groups in a single operation.
+   * Endpoint: PUT /shops/:shopId/products/sort
+   * Provide a sortedIds array (raw structure preserved due to incomplete docs).
+   */
   sortProducts(payload: SortProductsRequest) {
     return this._http.request<BulkOperationResponse>(
       'PUT',
@@ -333,6 +406,7 @@ export class ProductsAPI {
       { body: payload },
     );
   }
+  /** Bulk update disabled payment methods on targeted products. */
   bulkUpdateDisabledPaymentMethods(payload: BulkDisabledPaymentMethodsRequest) {
     return this._http.request<BulkOperationResponse>(
       'PUT',
@@ -340,6 +414,7 @@ export class ProductsAPI {
       { body: payload },
     );
   }
+  /** Bulk update custom field ids on products. */
   bulkUpdateCustomFields(payload: BulkCustomFieldsRequest) {
     return this._http.request<BulkOperationResponse>(
       'PUT',
@@ -347,6 +422,7 @@ export class ProductsAPI {
       { body: payload },
     );
   }
+  /** Bulk update Discord integration flags and roles. */
   bulkUpdateDiscordIntegration(payload: BulkDiscordIntegrationRequest) {
     return this._http.request<BulkOperationResponse>(
       'PUT',
@@ -354,6 +430,7 @@ export class ProductsAPI {
       { body: payload },
     );
   }
+  /** Bulk modify product descriptions (overwrite/append/prepend). */
   bulkUpdateDescription(payload: BulkDescriptionRequest) {
     return this._http.request<BulkOperationResponse>(
       'PUT',
@@ -361,6 +438,7 @@ export class ProductsAPI {
       { body: payload },
     );
   }
+  /** Bulk overwrite product instructions. */
   bulkUpdateInstructions(payload: BulkInstructionsRequest) {
     return this._http.request<BulkOperationResponse>(
       'PUT',
@@ -368,6 +446,7 @@ export class ProductsAPI {
       { body: payload },
     );
   }
+  /** Bulk set/clear out-of-stock messages. */
   bulkUpdateOutOfStockMessage(payload: BulkOutOfStockMessageRequest) {
     return this._http.request<BulkOperationResponse>(
       'PUT',
@@ -375,6 +454,7 @@ export class ProductsAPI {
       { body: payload },
     );
   }
+  /** Bulk update security flags (e.g. block_vpn). */
   bulkUpdateSecurity(payload: BulkSecurityRequest) {
     return this._http.request<BulkOperationResponse>(
       'PUT',
@@ -382,6 +462,7 @@ export class ProductsAPI {
       { body: payload },
     );
   }
+  /** Bulk modify product badges (overwrite/append/prepend). */
   bulkUpdateBadges(payload: BulkBadgesRequest) {
     return this._http.request<BulkOperationResponse>(
       'PUT',
@@ -389,6 +470,7 @@ export class ProductsAPI {
       { body: payload },
     );
   }
+  /** Bulk update status banner across products. */
   bulkUpdateStatus(payload: BulkStatusRequest) {
     return this._http.request<BulkOperationResponse>(
       'PUT',
@@ -396,6 +478,7 @@ export class ProductsAPI {
       { body: payload },
     );
   }
+  /** Bulk change visibility of selected products. */
   bulkUpdateVisibility(payload: BulkVisibilityRequest) {
     return this._http.request<BulkOperationResponse>(
       'PUT',
@@ -403,6 +486,7 @@ export class ProductsAPI {
       { body: payload },
     );
   }
+  /** Bulk toggle live statistics display flags. */
   bulkUpdateLiveStats(payload: BulkLiveStatsRequest) {
     return this._http.request<BulkOperationResponse>(
       'PUT',
@@ -410,6 +494,7 @@ export class ProductsAPI {
       { body: payload },
     );
   }
+  /** Bulk associate feedback coupon & minimum rating. */
   bulkUpdateFeedbackCoupon(payload: BulkFeedbackCouponRequest) {
     return this._http.request<BulkOperationResponse>(
       'PUT',
@@ -417,6 +502,7 @@ export class ProductsAPI {
       { body: payload },
     );
   }
+  /** Bulk set volume discount tiers & related flags. */
   bulkUpdateVolumeDiscounts(payload: BulkVolumeDiscountsRequest) {
     return this._http.request<BulkOperationResponse>(
       'PUT',
@@ -424,6 +510,7 @@ export class ProductsAPI {
       { body: payload },
     );
   }
+  /** Bulk set or clear redirect URL. */
   bulkUpdateRedirectUrl(payload: BulkRedirectUrlRequest) {
     return this._http.request<BulkOperationResponse>(
       'PUT',
@@ -431,6 +518,7 @@ export class ProductsAPI {
       { body: payload },
     );
   }
+  /** Bulk change deliverables type for products. */
   bulkUpdateDeliverablesType(payload: BulkDeliverablesTypeRequest) {
     return this._http.request<BulkOperationResponse>(
       'PUT',
@@ -438,6 +526,7 @@ export class ProductsAPI {
       { body: payload },
     );
   }
+  /** Bulk set deliverables label text. */
   bulkUpdateDeliverablesLabel(payload: BulkDeliverablesLabelRequest) {
     return this._http.request<BulkOperationResponse>(
       'PUT',

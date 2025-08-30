@@ -2,6 +2,7 @@ import { HttpClient, SellAuthClientOptions } from './core/http';
 import { CheckoutAPI } from './resources/checkout';
 import { InvoicesAPI } from './resources/invoices';
 import { ProductsAPI } from './resources/products';
+import { CustomersAPI } from './resources/customers';
 import { ShopsAPI } from './resources/shops';
 import { CryptoWalletAPI } from './resources/cryptoWallet';
 
@@ -26,6 +27,9 @@ export class SellAuthClient {
   }
   cryptoWallet(shopId: number | string) {
     return new CryptoWalletAPI(this.http, shopId);
+  }
+  customers(shopId: number | string) {
+    return new CustomersAPI(this.http, shopId);
   }
 }
 
