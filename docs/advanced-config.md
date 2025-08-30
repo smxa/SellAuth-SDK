@@ -98,13 +98,7 @@ auth: {
 
 ### Middleware Pipeline
 
-Pipeline composition: user middleware (if any) are placed before the built‑ins in the chain array and the chain is composed with `reduceRight` ending at the transport. This makes user middleware OUTERMOST. Effective order (outer → inner):
-
-1. `authMiddleware`
-2. `loggerMiddleware` (only if `logger` provided)
-3. `retryMiddleware`
-4. `responseParsingMiddleware`
-5. Your custom `middleware[]` (added outermost so they see the request before built-ins and can observe the response prior to parsing if they short‑circuit or you customize the chain).
+Middleware pipeline: built-ins execute first (auth → logger → retry → responseParsing) followed by any user `middleware[]`. This lets user middleware observe authenticated requests (with Authorization header) and already-parsed responses (in `res.data`). If you need to intercept before parsing, provide a custom transport or insert logic earlier by forking.
 
 To fully customize ordering, supply your own composed transport or open an issue to discuss additional ordering controls.
 

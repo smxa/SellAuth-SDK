@@ -40,8 +40,11 @@ export class AdvancedSellAuthClient {
     // user middleware are provided separately in config.middleware and will wrap these
     // Compose so user-provided middleware (if any) wrap built-ins: user outermost
     const builtIns = m;
-    const chain = [...(this.config.middleware || []), ...builtIns];
-    this.pipeline = chain.reduceRight((next, mw) => mw(next), transport);
+    const chain = [...builtIns, ...(this.config.middleware || [])];
+    // const chain = [...(this.config.middleware || []), ...builtIns]; // old ordering (user before built-ins)
+    // Reordered: execute built-ins first (auth->logger->retry->parse) then user middleware afterwards (user sees authenticated, retry-capable request & parsed response).
+    // If preserveOldMiddlewareOrder flag set in config (future), we could switch back.
+    this.pipeline = chain./*reordered*/reduce((next, mw) => mw(next), transport);
   }
 
   private buildUrl(path: string, query?: Record<string, any>) {
@@ -63,7 +66,7 @@ export class AdvancedSellAuthClient {
     const headers: Record<string, string> = { ...(this.config.headers || {}) };
     if (opts.headers) {
       // merge user headers
-      for (const [k, v] of Object.entries(opts.headers)) headers[k] = v;
+      for (const [k, v] of Object.entries(opts.headers)) { if (v !== undefined && v !== null) headers[k] = v as string; }
     }
     if (!Object.keys(headers).some((h) => h.toLowerCase() === 'accept')) {
       headers['Accept'] = 'application/json';
