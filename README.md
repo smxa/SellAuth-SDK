@@ -1,6 +1,6 @@
 # SellAuth Utils
 
-Company-built TypeScript library for talking to the SellAuth API (our digital goods marketplace provider). We looked for a solid, ergonomic SellAuth client—couldn't find one—so we wrote it.
+Company-built TypeScript library for interacting with the SellAuth API (our digital goods marketplace provider). We looked for a solid, ergonomic SellAuth client—couldn't find one—so we wrote it.
 
 Open sourced under MIT for the greater good of the internet: this is (minus private config) the same code running on https://illegal.wtf/ to manage our storefront + payments. Use it, fork it, improve it.
 
