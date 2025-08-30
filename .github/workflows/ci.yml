@@ -28,6 +28,14 @@ jobs:
       - name: Enable corepack (pnpm)
         run: corepack enable
 
+      - name: Prepare pnpm via corepack
+        run: corepack prepare pnpm@9.12.0 --activate
+
+      - name: Setup pnpm action (redundant safety)
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.12.0
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
