@@ -1137,18 +1137,3 @@ const txs = await client.cryptoWallet(shopId).getTransactions();
 ```
 
 ---
-
-## Troubleshooting & Notes
-
-- Pagination: Most list endpoints accept `page` and `perPage` (1–100). Use these to iterate through large datasets.
-- Error Handling: All methods return Promises. HTTP errors reject with an error that (depending on transport) may include status code and response body. Use `try/catch` and inspect error fields.
-- Partial Schemas: Interfaces deliberately omit undocumented fields; the index signatures ensure forward compatibility. Always defensively check for field existence.
-- Version: This documentation corresponds to SDK version 0.4.0.
-- Forward Compatibility: New API keys/fields will flow through objects; avoid exhaustive destructuring that could drop unknown properties.
-- Contribution: See repository README / CONTRIBUTING (open issues or PRs) to enhance typings or add resource coverage.
-- Server-side Use: Execute sensitive operations (invoices, checkout creation, payouts) only from trusted backend services with your API key.
-- Rate Limits: If the API enforces rate limits, implement retry/backoff in your calling code.
-
----
-
-Summary: This document covered installation, authentication, shop scoping, and detailed reference (types, classes, methods, parameters, and examples) for Shops, Products (including bulk operations), Customers, Invoices, Checkout, and Crypto Wallet resources, plus troubleshooting and version notes. Recommendations: handle errors gracefully, paginate large queries, and contribute improved type coverage as API docs evolve.
