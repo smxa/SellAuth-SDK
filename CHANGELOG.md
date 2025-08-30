@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.3.1 - 2025-08-30
+
+### Changed
+
+- CI: Upgraded to pnpm 10.15.0 and aligned `packageManager` field; replaced deprecated `pnpm pack --dry-run` with modern `--json` flow.
+- CI: Added artifact packaging step (tarball) and verification of built dist presence.
+- Lint: Migrated ignore patterns into flat config; added `@eslint/js` dependency to satisfy flat config base rules.
+
+### Added
+
+- Publish workflow guard: early failure if `NPM_TOKEN` not provided.
+
+### Internal
+
+- Regenerated lockfile after dependency / toolchain adjustments.
+
 ## 0.3.0 - 2025-08-30
 
 ### Changed
