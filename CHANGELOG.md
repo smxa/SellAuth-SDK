@@ -1,10 +1,28 @@
 # Changelog
 
-## Unreleased
+## 0.4.1 - 2025-08-31
+
+### Changed
+
+- Documentation: README surfaces direct links to SDK Docs and raw API endpoints; converted inline code doc references to clickable links.
+
+### Internal
+
+- Version bump only; no runtime code changes.
+
+## 0.4.0 - 2025-08-31
 
 ### Added
 
 - Crypto wallet payouts resource: `cryptoWallet(shopId)` with `getPayouts`, `getBalances`, `getTransactions`, `payout`.
+- Products: bulk update & rich typing enhancements (bulk stock, price, and metadata operations).
+- Customers API: CRUD plus bulk tag/ban endpoints.
+- Invoices: advanced filters, dashboard note endpoint, archive/refund helpers.
+- Checkout: strong types for session creation.
+
+### Changed
+
+- Expanded JSDoc across resources for improved IntelliSense.
 
 ## 0.3.1 - 2025-08-30
 
