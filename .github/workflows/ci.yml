@@ -47,8 +47,8 @@ jobs:
       - name: Ensure dist artifacts present
         run: test -f dist/index.js && test -f dist/index.mjs && test -f dist/index.d.ts || (echo 'expected build artifacts missing' && ls -R dist && exit 1)
 
-      - name: Pack (dry run)
-        run: pnpm pack --dry-run
+      - name: Pack
+        run: pnpm pack --json
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
