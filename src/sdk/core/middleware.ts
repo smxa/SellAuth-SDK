@@ -62,7 +62,8 @@ function sanitizeHeaders(
   for (const [k, v] of Object.entries(headers || {})) {
     const lk = k.toLowerCase();
     if (sensitive.has(lk) && !allow.has(lk)) {
-      if (typeof mask === 'function') out[k] = mask(lk, typeof v === 'string' ? v : String(v)); // mask fn may ignore args
+      if (typeof mask === 'function')
+        out[k] = mask(lk, typeof v === 'string' ? v : String(v)); // mask fn may ignore args
       else if (typeof v === 'string' && v.length > 12 && mask === '[REDACTED]')
         out[k] = `[REDACTED:${v.slice(-4)}]`;
       else out[k] = mask;
@@ -76,10 +77,14 @@ export const loggerMiddleware =
   (next: Transport) =>
   async (req) => {
     const start = Date.now();
-    logger?.debug?.('request', { method: req.method, url: req.url, headers: sanitizeHeaders(req.headers, options) });
+    logger?.debug?.('request', {
+      method: req.method,
+      url: req.url,
+      headers: sanitizeHeaders(req.headers, options),
+    });
     try {
       const res = await next(req);
-       logger?.debug?.('response', { url: req.url, status: res.status, ms: Date.now() - start }); // headers intentionally omitted to avoid leaking sensitive data
+      logger?.debug?.('response', { url: req.url, status: res.status, ms: Date.now() - start }); // headers intentionally omitted to avoid leaking sensitive data
       return res;
     } catch (e: any) {
       logger?.error?.('error', { url: req.url, error: e, ms: Date.now() - start });

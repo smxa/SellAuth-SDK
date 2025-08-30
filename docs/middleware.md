@@ -10,16 +10,16 @@ Order (execution sequence left→right):
 4. `responseParsingMiddleware`
 5. Custom `middleware[]` (user supplied, runs AFTER built-ins so it sees authenticated requests & parsed responses)
 
-
-  return res; // or modified res
+return res; // or modified res
 };
-```
+
+````
 
 Insert via config:
 
 ```ts
 new AdvancedSellAuthClient({ middleware: [myMiddleware] });
-```
+````
 
 ## Logging Sanitization
 
