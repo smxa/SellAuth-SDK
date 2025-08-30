@@ -1,4 +1,4 @@
-import { HttpClient } from '../core/http';
+import type { RequestFn } from '../core/types';
 
 export interface CheckoutSession {
   success: boolean;
@@ -9,6 +9,15 @@ export interface CheckoutSession {
 }
 
 export class CheckoutAPI {
-  constructor(private http: HttpClient, private shopId: number | string) {}
-  create(payload: Record<string, any>) { return this.http.request<CheckoutSession>('POST', `/shops/${this.shopId}/checkout`, { body: payload }); }
+  constructor(
+    private readonly _http: { request: RequestFn },
+    private readonly _shopId: number | string,
+  ) {
+    /* store deps */
+  }
+  create(payload: Record<string, any>) {
+    return this._http.request<CheckoutSession>('POST', `/shops/${this._shopId}/checkout`, {
+      body: payload,
+    });
+  }
 }

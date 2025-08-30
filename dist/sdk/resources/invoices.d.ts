@@ -1,4 +1,4 @@
-import { HttpClient } from '../core/http';
+import type { RequestFn } from '../core/types';
 export interface Invoice {
     id: number;
     status?: string;
@@ -7,9 +7,11 @@ export interface Invoice {
     [k: string]: any;
 }
 export declare class InvoicesAPI {
-    private http;
-    private shopId;
-    constructor(http: HttpClient, shopId: number | string);
+    private readonly _http;
+    private readonly _shopId;
+    constructor(_http: {
+        request: RequestFn;
+    }, _shopId: number | string);
     list(filters?: Record<string, any>): Promise<Invoice[]>;
     get(invoiceId: number | string): Promise<Invoice>;
     archive(invoiceId: number | string): Promise<any>;

@@ -1,6 +1,6 @@
 {
   "name": "sellauth-utils",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
   "main": "dist/index.cjs",
   "module": "dist/index.js",
@@ -9,10 +9,19 @@
     "build": "tsc -p tsconfig.json",
     "prepare": "npm run build",
     "lint": "eslint . --ext .ts",
-    "example": "tsx examples/usage.ts"
+    "example": "tsx examples/usage.ts",
+    "example:advanced": "tsx examples/advanced.ts",
+    "example:caching": "tsx examples/caching-middleware.ts",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "devDependencies": {
     "@types/node": "^20.11.0",
+    "@typescript-eslint/eslint-plugin": "^8.41.0",
+    "@typescript-eslint/parser": "^8.41.0",
+    "eslint": "^9.34.0",
+    "eslint-config-prettier": "^10.1.8",
+    "prettier": "^3.6.2",
     "tsx": "^4.7.0",
     "typescript": "^5.4.0"
   },

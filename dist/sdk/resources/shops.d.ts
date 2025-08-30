@@ -1,4 +1,4 @@
-import { HttpClient } from '../core/http';
+import type { RequestFn } from '../core/types';
 export interface Shop {
     id: number;
     name: string;
@@ -8,9 +8,11 @@ export interface Shop {
     [k: string]: any;
 }
 export declare class ShopsAPI {
-    private http;
-    constructor(http: HttpClient);
-    list(): Promise<Shop[]>;
+    private readonly _http;
+    constructor(_http: {
+        request: RequestFn;
+    });
+    list(): Promise<Shop>;
     get(shopId: number | string): Promise<Shop>;
     stats(shopId: number | string): Promise<any>;
     create(data: {

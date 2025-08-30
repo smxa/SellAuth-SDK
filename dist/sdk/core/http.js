@@ -1,4 +1,3 @@
-// Using native fetch (Node 18+ / browsers). No external fetch polyfill.
 export class SellAuthError extends Error {
     status;
     code;
@@ -27,10 +26,10 @@ export class HttpClient {
     async request(method, path, init = {}) {
         const url = this.makeUrl(path, init.query);
         const headers = {
-            'Authorization': `Bearer ${this.apiKey}`,
-            'Accept': 'application/json',
+            Authorization: `Bearer ${this.apiKey}`,
+            Accept: 'application/json',
             'User-Agent': this.userAgent,
-            ...init.headers
+            ...init.headers,
         };
         let body;
         if (init.body !== undefined && init.body !== null && !(init.body instanceof FormData)) {
@@ -46,7 +45,12 @@ export class HttpClient {
             const controller = new AbortController();
             const timeout = setTimeout(() => controller.abort(), this.timeoutMs);
             try {
-                const res = await globalThis.fetch(url, { method, headers, body, signal: init.signal ?? controller.signal });
+                const res = await globalThis.fetch(url, {
+                    method,
+                    headers,
+                    body,
+                    signal: init.signal ?? controller.signal,
+                });
                 clearTimeout(timeout);
                 if (res.status === 204)
                     return undefined;
@@ -67,7 +71,10 @@ export class HttpClient {
                     attempt++;
                     continue;
                 }
-                throw new SellAuthError(data?.message || `HTTP ${res.status}`, { status: res.status, details: data });
+                throw new SellAuthError(data?.message || `HTTP ${res.status}`, {
+                    status: res.status,
+                    details: data,
+                });
             }
             catch (err) {
                 clearTimeout(timeout);
@@ -91,10 +98,16 @@ export class HttpClient {
                 break;
             }
         }
-        throw (lastError instanceof SellAuthError ? lastError : new SellAuthError(lastError?.message || 'Unknown error', { details: lastError }));
+        throw lastError instanceof SellAuthError
+            ? lastError
+            : new SellAuthError(lastError?.message || 'Unknown error', {
+                details: lastError,
+            });
     }
     makeUrl(path, query) {
-        let full = path.startsWith('http') ? path : `${this.baseUrl}${path.startsWith('/') ? '' : '/'}${path}`;
+        let full = path.startsWith('http')
+            ? path
+            : `${this.baseUrl}${path.startsWith('/') ? '' : '/'}${path}`;
         if (query && Object.keys(query).length) {
             const qs = Object.entries(query)
                 .filter(([, v]) => v !== undefined && v !== null)
@@ -115,5 +128,7 @@ export class HttpClient {
         const jitter = Math.random() * base * 0.2; // +-20%
         return base + jitter;
     }
-    sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+    sleep(ms) {
+        return new Promise((r) => setTimeout(r, ms));
+    }
 }
