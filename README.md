@@ -77,7 +77,7 @@ for await (const product of paginateAll(
 
 ```ts
 const session = await client.checkout(shopId).create({
-  cart: [{ productId: 1, variantId: 2, quantity: 1 }],
+  cart: [{ productId: 1, variantId: 1, quantity: 1 }],
   gateway: 'STRIPE',
   email: 'customer@example.com',
 });
