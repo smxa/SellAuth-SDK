@@ -2,26 +2,46 @@ import { AdvancedSellAuthClient } from '../src/sdk/advanced';
 import type { Middleware } from '../src/sdk/advanced';
 
 // Simple per-middleware-instance in-memory GET cache with TTL
+// Notes:
+// - Cache is per middleware instance (avoid module-level leakage).
+// - Only successful 2xx responses cached.
+// - Authorization header fingerprint hashed (FNV-1a 64-bit) to separate caches per token without storing raw token.
 interface CacheEntry {
   expires: number;
   value: any;
   raw: string;
 }
 
-const cachingMiddleware = (ttlMs: number): Middleware => {
+const DEFAULT_TTL_MS = 10_000; // 10 seconds
+const CACHEABLE_METHOD = 'GET';
+const FNV64_OFFSET_BASIS = 0xcbf29ce484222325n;
+const FNV64_PRIME = 0x100000001b3n;
+
+const cachingMiddleware = (ttlMs: number = DEFAULT_TTL_MS): Middleware => {
   const cache = new Map<string, CacheEntry>();
+  const fnv1a64 = (str: string) => {
+    let h = FNV64_OFFSET_BASIS;
+    for (let i = 0; i < str.length; i++) {
+      h ^= BigInt(str.charCodeAt(i));
+      h = (h * FNV64_PRIME) & 0xffffffffffffffffn;
+    }
+    return h.toString(16).padStart(16, '0');
+  };
   const keyFor = (req: any) => {
-    const auth = Object.keys(req.headers || {}).find((h) => h.toLowerCase() === 'authorization');
-    const authVal = auth ? req.headers[auth] : '';
-    const authFp = authVal ? authVal.slice(0, 16) : '';
-    return req.method + ' ' + req.url + ' ' + authFp;
+    const headers = Object.fromEntries(
+      Object.entries(req.headers || {}).map(([k, v]) => [k.toLowerCase(), v ?? '']),
+    );
+    const authVal = String(headers['authorization'] || '');
+    const authFp = authVal ? fnv1a64(authVal) : '';
+    return `${req.method} ${req.url} ${authFp}`;
   };
   return (next) => async (req) => {
-    if (req.method === 'GET') {
+    if (req.method === CACHEABLE_METHOD) {
       const key = keyFor(req);
       const hit = cache.get(key);
       const now = Date.now();
       if (hit && hit.expires > now) {
+        // Return minimal transport-like response with cached data
         return {
           status: 200,
           headers: {},
@@ -34,8 +54,10 @@ const cachingMiddleware = (ttlMs: number): Middleware => {
       const ok =
         res && (typeof res.ok === 'boolean' ? res.ok : res.status >= 200 && res.status < 300);
       if (ok) {
-        const raw = JSON.stringify(res.data);
-        cache.set(key, { expires: Date.now() + ttlMs, value: res.data, raw });
+        if (res.data !== undefined) {
+          const raw = JSON.stringify(res.data);
+          cache.set(key, { expires: Date.now() + ttlMs, value: res.data, raw });
+        }
       }
       return res;
     }
@@ -46,7 +68,7 @@ const cachingMiddleware = (ttlMs: number): Middleware => {
 async function main() {
   const client = new AdvancedSellAuthClient({
     apiKey: process.env.SELLAUTH_TOKEN,
-    middleware: [cachingMiddleware(10_000)], // 10s TTL
+    middleware: [cachingMiddleware()], // default 10s TTL
   });
 
   console.time('first');
