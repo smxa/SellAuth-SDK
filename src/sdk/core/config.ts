@@ -99,5 +99,5 @@ export function normalizeConfig(c: SellAuthAdvancedConfig): Required<Pick<SellAu
     methods: c.retries?.methods || ['GET','HEAD','OPTIONS'],
     statusCodes: c.retries?.statusCodes || [408,429,500,502,503,504]
   };
-  return { ...c, baseUrl, timeoutMs, retry } as any;
+  return { ...c, baseUrl, timeoutMs, retry } as Required<Pick<SellAuthAdvancedConfig,'baseUrl'|'timeoutMs'>> & SellAuthAdvancedConfig & { retry: RetryOptions };
 }
