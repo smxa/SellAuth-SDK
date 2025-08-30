@@ -1,84 +1,59 @@
-# SellAuth Utils (internal)
+# SellAuth Utils
 
-Small TypeScript SDK + consolidated docs for the SellAuth API — internal use only.
-
-## Summary
+TypeScript SDK for the SellAuth API.
 
 Provides:
+- Lightweight HTTP client and resource wrappers (shops, products, invoices, checkout)
+- Advanced configurable client with middleware, retries, hooks, custom transport
+- Pagination helpers for page/perPage APIs (streaming or aggregate)
+- Examples and focused documentation
 
-- Consolidated API reference (`SellAuth-API.md`).
-- Lightweight TypeScript SDK (`src/sdk`) with core HTTP client, resource wrappers (shops, products, invoices, checkout).
-- Typed pagination utilities for page/perPage style endpoints.
-- Example scripts (`examples/`).
+Status: Public release candidate.
 
-Runtime requirement: **Node.js >= 18** (native fetch).
+## Requirements
+- Node.js >= 18 (native fetch)
+- TypeScript 5.x (development only)
 
-## Prerequisites
-
-- Node.js >= 18
-- `SELLAUTH_TOKEN` (API key) in environment for live examples.
-
-## Install
-
+## Installation
 ```bash
-npm install
+npm install sellauth-utils
 ```
+(Adjust name if published under a different package scope.)
 
-## Build
-
-```bash
-npm run build
-```
-
-Outputs compiled files into `dist/` with type declarations.
-
-## Usage
-
-Initialize client:
-
+## Quick Start
 ```ts
-import { SellAuthClient } from './dist';
+import { SellAuthClient } from 'sellauth-utils';
 const client = new SellAuthClient({ apiKey: process.env.SELLAUTH_TOKEN! });
-```
-
-List shops:
-
-```ts
 const shops = await client.shops.list();
 console.log(shops);
 ```
 
-List products for a shop (first page):
-
+### Products (paginated)
 ```ts
 const products = await client.products(shopId).list({ page: 1, perPage: 20 });
 ```
 
-Collect all products with pagination helper:
-
+### Collect all products
 ```ts
-import { fetchAllPages } from './dist';
+import { fetchAllPages } from 'sellauth-utils';
 const all = await fetchAllPages(
   ({ page, perPage }) => client.products(shopId).list({ page, perPage }),
   { pageSize: 100 },
 );
-console.log(all.length);
 ```
 
-Stream products (memory efficient):
-
+### Stream products
 ```ts
-import { paginateAll } from './dist';
+import { paginateAll } from 'sellauth-utils';
 for await (const product of paginateAll(
   ({ page, perPage }) => client.products(shopId).list({ page, perPage }),
   { pageSize: 50 },
 )) {
-  // process product
+  // handle product
 }
 ```
 
-Create a checkout session (server-side only):
-
+### Create a checkout (server-side)
 ```ts
 const session = await client.checkout(shopId).create({
   cart: [{ productId: 1, variantId: 2, quantity: 1 }],
@@ -88,63 +63,118 @@ const session = await client.checkout(shopId).create({
 console.log(session.invoice_url, session.url);
 ```
 
-Error handling pattern:
-
+### Error handling
 ```ts
-import { SellAuthError } from './dist';
+import { SellAuthError } from 'sellauth-utils';
 try {
   await client.products(shopId).list({ page: 1, perPage: 10 });
 } catch (e) {
   if (e instanceof SellAuthError) {
     console.error('API error', e.status, e.details);
   } else {
-    console.error('Unexpected', e);
+    throw e;
   }
 }
 ```
 
+## Advanced Client
+Use `AdvancedSellAuthClient` for dynamic auth, custom retry/backoff strategies, lifecycle hooks, custom transport, and middleware extensibility.
+```ts
+import { AdvancedSellAuthClient } from 'sellauth-utils';
+const client = new AdvancedSellAuthClient({
+  apiKey: process.env.SELLAUTH_TOKEN,
+  retries: { attempts: 5, backoff: 'exponential', baseDelayMs: 250 },
+  beforeRequest: (r) => console.log('->', r.method, r.url),
+  afterResponse: (_d, r) => console.log('<-', r.method, r.url),
+  logger: console,
+});
+const shops = await client.request('GET', '/shops');
+```
+Features:
+- Pluggable auth (static api key, dynamic bearer, custom signer)
+- Configurable retries with symmetric jittered exponential backoff & predicate
+- Middleware pipeline (auth → logger → retry → parse → your middleware)
+- Hooks: `beforeRequest` / `afterResponse`
+- Custom transport (swap fetch, add tracing, circuit breaking)
+
+See: `docs/advanced-config.md`, `docs/middleware.md`.
+
 ## Pagination Helpers
-
-Located at `src/sdk/pagination.ts`:
-
-- `paginateAll(fetchPage, opts)` AsyncGenerator streaming items.
-- `fetchAllPages(fetchPage, opts)` Promise of all items.
-- `fetchPages(fetchPage, opts)` array of pages.
+Located in `src/sdk/pagination.ts` and re-exported.
+- `paginateAll(fetchPage, opts)` AsyncGenerator streaming items
+- `fetchAllPages(fetchPage, opts)` collect all items
+- `fetchPages(fetchPage, opts)` collect page objects
 
 `opts` fields: `pageSize`, `maxPages`, `concurrency`, `stopOnEmpty`, `transform`, `onPage`.
 
-## Project Structure
+## API Surface
+Exports (index):
+- `SellAuthClient`
+- `AdvancedSellAuthClient`
+- Resource factories: `shops`, `products`, `invoices`, `checkout`
+- Pagination: `paginateAll`, `fetchAllPages`, `fetchPages`
+- Errors: `SellAuthError`
 
-```
-src/
-  sdk/
-    core/http.ts        # HttpClient (native fetch, retries, timeouts)
-    client.ts           # SellAuthClient facade
-    resources/          # Resource-specific API wrappers
-    pagination.ts       # Pagination utilities
-SellAuth-API.md         # Consolidated API reference
-examples/               # Usage examples
-```
+Consult `SellAuth-API.md` for endpoint inventory.
 
-## Security & Best Practices
+## Security
+- Never expose API keys in browser code; use server-side only.
+- Store secrets in environment variables or a secrets manager.
+- Restrict sensitive operations (e.g. checkout creation) to backends.
+- Retries mitigate transient network/server errors; still apply rate limiting.
 
-- Keep `SELLAUTH_TOKEN` out of source control (use `.env`, secrets manager, or CI secrets).
-- Do not expose API key in client/browser code.
-- Use server-side endpoints (like checkout creation) only from trusted backends.
-- Consider rate limiting callers; SDK adds retry/backoff for transient HTTP issues.
+## Examples
+See `examples/` for:
+- Basic usage (`usage.ts`)
+- Advanced client config (`advanced.ts`)
+- Caching middleware (`caching-middleware.ts`)
+- Pagination patterns (`pagination.ts`)
 
-## Running Examples
-
+Run (example):
 ```bash
-export SELLAUTH_TOKEN="<your-api-key-here>"  # example
+export SELLAUTH_TOKEN="<api-key>"
 node --loader tsx examples/usage.ts
 ```
 
-The line is annotated with `# example` so the pre-commit secret scan hook treats it as an intentional documentation example.
+## Extending
+1. Add file in `src/sdk/resources/` (e.g. `coupons.ts`).
+2. Implement a class using the shared HTTP client.
+3. Export via `src/sdk/resources/index.ts` and root index.
+4. Add example + docs if needed.
 
+## Troubleshooting
+- Node < 18: upgrade (native fetch required).
+- Timeouts: raise `timeoutMs` or retry `attempts` in client options.
+- 401 Unauthorized: verify API key validity and header formatting.
+
+## Release Process
+1. Update `CHANGELOG.md`.
+2. `npm run build` (verify `dist/`).
+3. Bump version in `package.json` (semver).
+4. Commit & tag: `git tag vX.Y.Z`.
+5. Publish: `npm publish --access public`.
+6. Push tags: `git push --tags`.
+
+## Contributing
+PRs welcome. Keep changes focused. Follow existing commit style. Run:
 ```bash
-SELLAUTH_TOKEN=... node --loader tsx examples/usage.ts
+npm run lint
+npm run build
 ```
+
+## License
+Specify license (e.g. MIT) in a `LICENSE` file before public publish.
+
+## Additional Docs
+- API reference: `SellAuth-API.md`
+- Advanced configuration: `docs/advanced-config.md`
+- Middleware details: `docs/middleware.md`
+
+---
+
+Ready for public consumption pending license and publish decision.
+
+=======
 
 (If variable name is `SELLAUTH_TOKEN`, adjust accordingly.)
 
@@ -205,3 +235,4 @@ See `SellAuth-API.md` for endpoint inventory and original doc links. For advance
 ---
 
 Internal use only.
+>>>>>>> origin/main
