@@ -5,3 +5,4 @@ export * from './products';
 export * from './customers';
 export * from './shops';
 export * from './blacklist';
+export * from './analytics';

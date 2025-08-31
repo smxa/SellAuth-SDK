@@ -23,17 +23,17 @@ const shops = await client.request<any>('GET', '/shops');
 
 | Field           | Type                     | Default                       | Notes                                     |
 | --------------- | ------------------------ | ----------------------------- | ----------------------------------------- | ------------------------------- |
-| `apiKey`        | `string?`                | —                             | Convenience for bearer/api key auth.      |
+| `apiKey`        | `string?`                | -                             | Convenience for bearer/api key auth.      |
 | `baseUrl`       | `string?`                | `https://api.sellauth.com/v1` | Trailing slash trimmed.                   |
 | `timeoutMs`     | `number?`                | `15000`                       | Per request unless overridden.            |
 | `retries`       | `number                  | RetryOptions?`                | `3 attempts` exponential                  | Number shorthand => attempts.   |
-| `headers`       | `Record<string,string>?` | —                             | Merged into each request.                 |
+| `headers`       | `Record<string,string>?` | -                             | Merged into each request.                 |
 | `auth`          | `AuthConfig?`            | derived                       | Advanced auth strategies.                 |
 | `transport`     | `Transport?`             | native fetch wrapper          | Full replacement.                         |
-| `middleware`    | `Middleware[]?`          | —                             | Appended after built‑ins.                 |
-| `logger`        | `LoggerLike?`            | —                             | Enables `loggerMiddleware` (debug/error). |
-| `beforeRequest` | `(req) => void           | Promise`                      | —                                         | Modify/log request before send. |
-| `afterResponse` | `(data, req) => void     | Promise`                      | —                                         | Observe parsed response data.   |
+| `middleware`    | `Middleware[]?`          | -                             | Appended after built‑ins.                 |
+| `logger`        | `LoggerLike?`            | -                             | Enables `loggerMiddleware` (debug/error). |
+| `beforeRequest` | `(req) => void           | Promise`                      | -                                         | Modify/log request before send. |
+| `afterResponse` | `(data, req) => void     | Promise`                      | -                                         | Observe parsed response data.   |
 
 ### RetryOptions
 
@@ -43,10 +43,10 @@ const shops = await client.request<any>('GET', '/shops');
 | `backoff`     | `'fixed'                | 'exponential'`              | `exponential` |
 | `factor`      | Growth factor (exp)     | `2`                         |
 | `baseDelayMs` | Initial delay           | `300`                       |
-| `maxDelayMs`  | Cap (optional)          | —                           |
+| `maxDelayMs`  | Cap (optional)          | -                           |
 | `methods`     | Methods eligible        | `['GET','HEAD','OPTIONS']`  |
 | `statusCodes` | HTTP retry list         | `[408,429,500,502,503,504]` |
-| `retryOn`     | Custom predicate        | —                           |
+| `retryOn`     | Custom predicate        | -                           |
 
 Custom `retryOn` example (retry 502/503, not 500, plus network errors):
 
@@ -93,8 +93,8 @@ auth: {
 
 ### Lifecycle Hooks
 
-- `beforeRequest(req)` — mutate headers, inject tracing IDs, metrics start.
-- `afterResponse(data, req)` — emit metrics, logging, caching, tracing end.
+- `beforeRequest(req)` - mutate headers, inject tracing IDs, metrics start.
+- `afterResponse(data, req)` - emit metrics, logging, caching, tracing end.
 
 ### Middleware Pipeline
 

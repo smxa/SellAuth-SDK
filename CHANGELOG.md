@@ -5,6 +5,7 @@
 ### Added
 
 - Blacklist resource: `blacklist(shopId)` with `list`, `create`, `get`, `update`, `delete`.
+- Analytics resource: `analytics(shopId)` with `overview`, `graph`, `topProducts`, `topCustomers` (graph/product/customer shapes partially inferred).
 
 ## 0.4.2 - 2025-08-31
 

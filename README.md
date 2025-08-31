@@ -1,6 +1,6 @@
 # SellAuth Utils
 
-Company-built TypeScript library for interacting with the SellAuth API (our digital goods marketplace provider). We looked for a solid, ergonomic SellAuth client—couldn't find one—so we wrote it.
+Company-built TypeScript library for interacting with the SellAuth API (our digital goods marketplace provider). We looked for a solid, ergonomic SellAuth client. Couldn't find one; so we wrote it.
 
 Open sourced under MIT for the greater good of the internet: this is (minus private config) the same code running on https://illegal.wtf/ to manage our storefront + payments. Use it, fork it, improve it.
 
@@ -8,7 +8,7 @@ Provides:
 
 ## Good Faith Stuff
 
-- Community first: so you don’t have to re‑build a SellAuth SDK from scratch.
+- Community first: so you don't have to re‑build a SellAuth SDK from scratch.
 - MIT licensed: permissive-copy, modify, ship.
 - Transparent: no hidden telemetry; what you see is what runs.
 - Practical: pagination, retries, middleware all battle-tested in production.
@@ -84,6 +84,13 @@ const session = await client.checkout(shopId).create({
 console.log(session.invoice_url, session.url);
 ```
 
+### Analytics
+
+```ts
+const overview = await client.analytics(shopId).overview();
+const topCustomers = await client.analytics(shopId).topCustomers();
+```
+
 ### Blacklist
 
 ```ts
@@ -155,7 +162,7 @@ Exports (index):
 
 - `SellAuthClient`
 - `AdvancedSellAuthClient`
-- Resource factories: `shops`, `products`, `invoices`, `checkout`, `cryptoWallet`, `blacklist`
+- Resource factories: `shops`, `products`, `invoices`, `checkout`, `cryptoWallet`, `blacklist`, `analytics`
 - Pagination: `paginateAll`, `fetchAllPages`, `fetchPages`
 - Errors: `SellAuthError`
 
@@ -177,6 +184,7 @@ See `examples/` for:
 - Caching middleware (`caching-middleware.ts`)
 - Pagination patterns (`pagination.ts`)
 - Blacklist management (`blacklist.ts`)
+- Analytics overview (`analytics.ts`)
 
 Run (example):
 
