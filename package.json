@@ -30,6 +30,11 @@
       "import": "./dist/index.mjs",
       "require": "./dist/index.js"
     },
+    "./advanced": {
+      "types": "./dist/sdk/advanced.d.ts",
+      "import": "./dist/sdk/advanced.mjs",
+      "require": "./dist/sdk/advanced.js"
+    },
     "./package.json": "./package.json"
   },
   "files": [
@@ -44,7 +49,7 @@
   },
   "scripts": {
     "clean": "rm -rf dist",
-    "build": "tsup src/index.ts --format cjs,esm --dts --sourcemap --clean --out-dir dist",
+    "build": "tsup src/index.ts src/sdk/advanced.ts --format cjs,esm --dts --sourcemap --clean --out-dir dist",
     "test:build": "node -e \"require('./dist');import('./dist/index.mjs')\"",
     "prepare": "pnpm run build",
     "lint": "eslint . --ext .ts",
