@@ -4,7 +4,7 @@
 
 ### Added
 
-- (placeholder)
+- Enhanced CryptoWallet payout request with required password and TFA code fields for secure payouts
 
 ## 0.5.0 - 2025-08-31
 

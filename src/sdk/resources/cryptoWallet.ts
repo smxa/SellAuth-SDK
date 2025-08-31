@@ -50,11 +50,14 @@ export type CryptoPayoutCurrency = 'btc' | 'ltc';
 /**
  * Request body for initiating a payout.
  * API docs: https://docs.sellauth.com/api-documentation/crypto--wallet#payout
+ * There's also undocumented "password" and "tfa_code" fields that are required for payouts
  */
 export interface CryptoPayoutRequest {
   currency: CryptoPayoutCurrency;
   address: string;
   amount: number;
+  password: string;
+  tfa_code: string;
 }
 
 /**

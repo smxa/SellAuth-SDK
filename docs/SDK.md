@@ -1157,7 +1157,7 @@ Payouts, balances, and transactions for crypto funds.
 - `CryptoBalanceRecord` – Balance per currency
 - `CryptoTransactionRecord` – Transaction record
 - `CryptoPayoutCurrency` – 'btc' | 'ltc'
-- `CryptoPayoutRequest` – Payout initiation payload
+- `CryptoPayoutRequest` – Payout initiation payload (includes currency, address, amount, password, tfa_code)
 
 ### Class: CryptoWalletAPI
 
@@ -1199,9 +1199,9 @@ const balances = await client.cryptoWallet(shopId).getBalances();
 Signature: `payout(body: CryptoPayoutRequest): Promise<CryptoPayoutRecord | { success?: boolean }>`  
 Parameters:
 
-| Name | Type                | Required | Description               |
-| ---- | ------------------- | -------- | ------------------------- |
-| body | CryptoPayoutRequest | Yes      | Currency, address, amount |
+| Name | Type                | Required | Description                                   |
+| ---- | ------------------- | -------- | --------------------------------------------- |
+| body | CryptoPayoutRequest | Yes      | Currency, address, amount, password, tfa_code |
 
 Returns: Payout record or success flag.  
 Example:
@@ -1211,6 +1211,8 @@ await client.cryptoWallet(shopId).payout({
   currency: 'btc',
   address: 'bc1qexample',
   amount: 0.01,
+  password: 'yourpassword',
+  tfa_code: '123456',
 });
 ```
 
