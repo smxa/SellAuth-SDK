@@ -10,8 +10,8 @@
 
 ### Added
 
-- Analytics: optional query params (`start`, `end`, `excludeManual`, `excludeArchived`, `currency`) for `overview` and `graph`.
-- Notifications resource: `notifications(shopId).latest()` to fetch latest shop notifications.
+- Added advanced analytics (date range & filtering: `start`, `end`, `excludeManual`, `excludeArchived`, `currency`) for `overview` & `graph`.
+- Added notification fetching via `notifications(shopId).latest()` (latest shop notifications).
 
 ## 0.5.1 - 2025-09-01
 
