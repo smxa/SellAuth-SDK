@@ -1,12 +1,13 @@
 import { HttpClient, SellAuthClientOptions } from './core/http';
+import { NotificationsAPI } from './resources';
+import { AnalyticsAPI } from './resources/analytics';
+import { BlacklistAPI } from './resources/blacklist';
 import { CheckoutAPI } from './resources/checkout';
+import { CryptoWalletAPI } from './resources/cryptoWallet';
+import { CustomersAPI } from './resources/customers';
 import { InvoicesAPI } from './resources/invoices';
 import { ProductsAPI } from './resources/products';
-import { CustomersAPI } from './resources/customers';
 import { ShopsAPI } from './resources/shops';
-import { CryptoWalletAPI } from './resources/cryptoWallet';
-import { BlacklistAPI } from './resources/blacklist';
-import { AnalyticsAPI } from './resources/analytics';
 
 export class SellAuthClient {
   readonly http: HttpClient;
@@ -38,6 +39,9 @@ export class SellAuthClient {
   }
   analytics(shopId: number | string) {
     return new AnalyticsAPI(this.http, shopId);
+  }
+  notifications(shopId: number | string) {
+    return new NotificationsAPI(this.http, shopId);
   }
 }
 

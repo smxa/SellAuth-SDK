@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.5.3 - 2025-09-01
+
+### Added
+
+- Added `notifications(shopId)` method to `SellAuthClient` for accessing shop notifications.
+
 ## 0.5.2 - 2025-09-01
 
 ### Added
