@@ -18,7 +18,7 @@ const client = new SellAuthClient({
 });
 
 // List shops
-const shops = await client.shops().list();
+const shops = await client.shops.list();
 
 // Work within a specific shop
 const shopId = shops[0].id;
@@ -42,7 +42,7 @@ Manage shops (listing, retrieving stats, creating, updating, deleting).
 
 ### Class: ShopsAPI
 
-Wraps shop-level operations. Prefer using `SellAuthClient.shops()` instead of instantiating directly. Constructor signature: `new ShopsAPI(_http)`.
+Wraps shop-level operations. Prefer using `SellAuthClient.shops` instead of instantiating directly. Constructor signature: `new ShopsAPI(_http)`.
 
 ### Methods Overview
 
@@ -65,7 +65,7 @@ Returns: A promise resolving to an array (typed as `Shop` in code; underlying tr
 Example:
 
 ```ts
-const shops = await client.shops().list();
+const shops = await client.shops.list();
 ```
 
 #### get()
@@ -81,7 +81,7 @@ Returns: Shop object.
 Example:
 
 ```ts
-const shop = await client.shops().get(123);
+const shop = await client.shops.get(123);
 ```
 
 #### stats()
@@ -97,7 +97,7 @@ Returns: Statistics object (shape not fully documented).
 Example:
 
 ```ts
-const stats = await client.shops().stats(123);
+const stats = await client.shops.stats(123);
 ```
 
 #### create()
@@ -116,7 +116,7 @@ Returns: Created shop.
 Example:
 
 ```ts
-const newShop = await client.shops().create({ name: 'My Shop', subdomain: 'myshop' });
+const newShop = await client.shops.create({ name: 'My Shop', subdomain: 'myshop' });
 ```
 
 #### update()
@@ -133,7 +133,7 @@ Returns: Updated shop.
 Example:
 
 ```ts
-await client.shops().update(123, { name: 'Renamed Shop' });
+await client.shops.update(123, { name: 'Renamed Shop' });
 ```
 
 #### delete()
@@ -152,7 +152,7 @@ Returns: Success flag.
 Example:
 
 ```ts
-await client.shops().delete(123, { password: 'pw', name: 'My Shop' });
+await client.shops.delete(123, { password: 'pw', name: 'My Shop' });
 ```
 
 ---
@@ -1055,6 +1055,94 @@ const session = await client.checkout(shopId).create({
   email: 'buyer@example.com',
   gateway: 'STRIPE',
 });
+```
+
+---
+
+## Blacklist
+
+Manage blacklist entries (block emails, IPs, user agents, ASNs, or country codes) for fraud prevention.
+
+### Exported Types
+
+- `BlacklistEntry` – A blacklist record (id, value, type, match_type, optional reason, timestamps)
+- `BlacklistType` – 'email' | 'ip' | 'user_agent' | 'asn' | 'country_code'
+- `BlacklistMatchType` – 'exact' | 'regex'
+- `CreateBlacklistEntryRequest` – Create payload
+- `UpdateBlacklistEntryRequest` – Update payload (same shape)
+- `ListBlacklistParams` – Pagination params (page, perPage)
+
+### Class: BlacklistAPI
+
+Prefer `SellAuthClient.blacklist(shopId)`. Constructor: `new BlacklistAPI(_http, _shopId)`.
+
+### Methods Overview
+
+| Method             | HTTP   | Path Template                       | Description            |
+| ------------------ | ------ | ----------------------------------- | ---------------------- |
+| list(params?)      | GET    | /shops/:shopId/blacklist            | List blacklist entries |
+| create(payload)    | POST   | /shops/:shopId/blacklist            | Create entry           |
+| get(id)            | GET    | /shops/:shopId/blacklist/:id        | Retrieve entry         |
+| update(id,payload) | PUT    | /shops/:shopId/blacklist/:id/update | Update entry           |
+| delete(id)         | DELETE | /shops/:shopId/blacklist/:id        | Delete entry           |
+
+### Method Examples
+
+```ts
+// List
+const entries = await client.blacklist(shopId).list({ page: 1, perPage: 20 });
+// Create
+const entry = await client.blacklist(shopId).create({
+  value: 'blocked@example.com',
+  type: 'email',
+  match_type: 'exact',
+  reason: 'Fraud',
+});
+// Update
+await client.blacklist(shopId).update(entry.id, { ...entry, reason: 'Chargeback abuse' });
+// Delete
+await client.blacklist(shopId).delete(entry.id);
+```
+
+---
+
+## Analytics
+
+Shop analytics (overview KPIs, time‑series graph, top products/customers). Some schemas are inferred due to incomplete public docs; additional fields may appear.
+
+### Exported Types
+
+- `OverviewAnalytics` – revenue, orders, customers plus change deltas
+- `GraphAnalyticsResponse` – `{ points?: GraphPoint[] }` (points contain date + metrics)
+- `GraphPoint` – time‑series point (date, revenue?, orders?, customers?)
+- `TopProductAnalyticsItem` – productId, name, revenue, orders, quantity
+- `TopCustomerAnalyticsItem` – customerId, email, revenue, orders
+
+### Class: AnalyticsAPI
+
+Prefer `SellAuthClient.analytics(shopId)`. Constructor: `new AnalyticsAPI(_http, _shopId)`.
+
+### Methods Overview
+
+| Method         | HTTP | Path Template                          | Description                  |
+| -------------- | ---- | -------------------------------------- | ---------------------------- |
+| overview()     | GET  | /shops/:shopId/analytics               | KPI snapshot + deltas        |
+| graph()        | GET  | /shops/:shopId/analytics/graph         | Time‑series points           |
+| topProducts()  | GET  | /shops/:shopId/analytics/top-products  | Top products (approx top 5)  |
+| topCustomers() | GET  | /shops/:shopId/analytics/top-customers | Top customers (approx top 5) |
+
+### Notes
+
+- Currently no documented query params for date range; server chooses default window.
+- Treat optional numeric fields defensively (may be undefined when metric not applicable).
+
+### Method Examples
+
+```ts
+const overview = await client.analytics(shopId).overview();
+const graph = await client.analytics(shopId).graph();
+const topProducts = await client.analytics(shopId).topProducts();
+const topCustomers = await client.analytics(shopId).topCustomers();
 ```
 
 ---
