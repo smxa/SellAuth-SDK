@@ -2,8 +2,8 @@
 // Demonstrates a simple in-memory caching middleware for GET requests.
 // Usage: SELLAUTH_API_KEY=sk_xxx node --loader tsx examples/caching-middleware.ts
 
-import { AdvancedSellAuthClient } from '../src/sdk/advanced';
-import type { Middleware } from '../src/sdk/advanced';
+import type { Middleware } from '@wtfservices/sellauth-utils/advanced';
+import { AdvancedSellAuthClient } from '@wtfservices/sellauth-utils/advanced';
 
 // Simple per-middleware-instance in-memory GET cache with TTL
 // Notes:

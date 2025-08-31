@@ -2,7 +2,7 @@
 // Demonstrates pagination using paginateAll helper.
 // Usage: SELLAUTH_API_KEY=sk_xxx SELLAUTH_SHOP_ID=123 node --loader tsx examples/pagination.ts
 
-import { SellAuthClient, paginateAll } from '../src';
+import { SellAuthClient, paginateAll } from '@wtfservices/sellauth-utils';
 
 async function main() {
   // Retrieve environment variables

@@ -2,7 +2,7 @@
 // Basic usage example: List shops and products.
 // Usage: SELLAUTH_API_KEY=sk_xxx node --loader tsx examples/usage.ts
 
-import { SellAuthClient } from '../src';
+import { SellAuthClient } from '@wtfservices/sellauth-utils';
 
 async function main() {
   // Retrieve API key from environment
