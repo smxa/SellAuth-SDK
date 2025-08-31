@@ -1124,25 +1124,70 @@ Prefer `SellAuthClient.analytics(shopId)`. Constructor: `new AnalyticsAPI(_http,
 
 ### Methods Overview
 
-| Method         | HTTP | Path Template                          | Description                  |
-| -------------- | ---- | -------------------------------------- | ---------------------------- |
-| overview()     | GET  | /shops/:shopId/analytics               | KPI snapshot + deltas        |
-| graph()        | GET  | /shops/:shopId/analytics/graph         | Time‑series points           |
-| topProducts()  | GET  | /shops/:shopId/analytics/top-products  | Top products (approx top 5)  |
-| topCustomers() | GET  | /shops/:shopId/analytics/top-customers | Top customers (approx top 5) |
+| Method            | HTTP | Path Template                          | Description                                         |
+| ----------------- | ---- | -------------------------------------- | --------------------------------------------------- |
+| overview(params?) | GET  | /shops/:shopId/analytics               | KPI snapshot + deltas (date/range filters optional) |
+| graph(params?)    | GET  | /shops/:shopId/analytics/graph         | Time‑series points (date/range filters optional)    |
+| topProducts()     | GET  | /shops/:shopId/analytics/top-products  | Top products (approx top 5)                         |
+| topCustomers()    | GET  | /shops/:shopId/analytics/top-customers | Top customers (approx top 5)                        |
 
 ### Notes
 
-- Currently no documented query params for date range; server chooses default window.
+- Optional observed query params for `overview` & `graph` (experimental; not all documented):
+  - `start`, `end` (ISO string or Date)
+  - `excludeManual`, `excludeArchived` (booleans serialized as 0/1)
+  - `currency` (e.g. USD)
 - Treat optional numeric fields defensively (may be undefined when metric not applicable).
 
 ### Method Examples
 
 ```ts
-const overview = await client.analytics(shopId).overview();
-const graph = await client.analytics(shopId).graph();
+// With date range and currency
+const overview = await client.analytics(shopId).overview({
+  start: new Date(Date.now() - 24 * 3600_000),
+  end: new Date(),
+  currency: 'USD',
+});
+
+const graph = await client.analytics(shopId).graph({
+  start: '2025-08-30T21:00:00.000Z',
+  end: '2025-09-01T20:59:59.999Z',
+  excludeManual: false,
+  excludeArchived: false,
+});
+
 const topProducts = await client.analytics(shopId).topProducts();
 const topCustomers = await client.analytics(shopId).topCustomers();
+```
+
+---
+
+## Notifications
+
+Shop notifications (latest items feed – currently limited implementation).
+
+### Exported Types
+
+- `NotificationItem` – id, type, createdAt, read, message, title (partial; forward compatible)
+- `LatestNotificationsResponse` – wrapper containing notifications array
+
+### Class: NotificationsAPI
+
+Prefer `SellAuthClient.notifications(shopId)`. Constructor: `new NotificationsAPI(_http, _shopId)`.
+
+### Methods Overview
+
+| Method   | HTTP | Path Template                       | Description          |
+| -------- | ---- | ----------------------------------- | -------------------- |
+| latest() | GET  | /shops/:shopId/notifications/latest | Latest notifications |
+
+### Example
+
+```ts
+const latest = await client.notifications(shopId).latest();
+for (const n of latest.notifications ?? []) {
+  console.log(n.type, n.message);
+}
 ```
 
 ---

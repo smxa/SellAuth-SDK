@@ -4,6 +4,12 @@
 
 ### Added
 
+- _No changes yet_
+
+## 0.5.2 - 2025-09-01
+
+### Added
+
 - Analytics: optional query params (`start`, `end`, `excludeManual`, `excludeArchived`, `currency`) for `overview` and `graph`.
 - Notifications resource: `notifications(shopId).latest()` to fetch latest shop notifications.
 
