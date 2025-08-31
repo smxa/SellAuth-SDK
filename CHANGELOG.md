@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Added
+
+- Blacklist resource: `blacklist(shopId)` with `list`, `create`, `get`, `update`, `delete`.
+
 ## 0.4.2 - 2025-08-31
 
 ### Added

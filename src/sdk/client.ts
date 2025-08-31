@@ -5,6 +5,7 @@ import { ProductsAPI } from './resources/products';
 import { CustomersAPI } from './resources/customers';
 import { ShopsAPI } from './resources/shops';
 import { CryptoWalletAPI } from './resources/cryptoWallet';
+import { BlacklistAPI } from './resources/blacklist';
 
 export class SellAuthClient {
   readonly http: HttpClient;
@@ -30,6 +31,9 @@ export class SellAuthClient {
   }
   customers(shopId: number | string) {
     return new CustomersAPI(this.http, shopId);
+  }
+  blacklist(shopId: number | string) {
+    return new BlacklistAPI(this.http, shopId);
   }
 }
 

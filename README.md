@@ -84,6 +84,20 @@ const session = await client.checkout(shopId).create({
 console.log(session.invoice_url, session.url);
 ```
 
+### Blacklist
+
+```ts
+// Create a blacklist entry blocking an email
+const entry = await client.blacklist(shopId).create({
+  value: 'blocked@example.com',
+  type: 'email',
+  match_type: 'exact',
+  reason: 'Fraudulent activity',
+});
+// List
+const entries = await client.blacklist(shopId).list({ page: 1, perPage: 20 });
+```
+
 ### Error handling
 
 ```ts
@@ -141,7 +155,7 @@ Exports (index):
 
 - `SellAuthClient`
 - `AdvancedSellAuthClient`
-- Resource factories: `shops`, `products`, `invoices`, `checkout`, `cryptoWallet`
+- Resource factories: `shops`, `products`, `invoices`, `checkout`, `cryptoWallet`, `blacklist`
 - Pagination: `paginateAll`, `fetchAllPages`, `fetchPages`
 - Errors: `SellAuthError`
 
@@ -162,6 +176,7 @@ See `examples/` for:
 - Advanced client config (`advanced.ts`)
 - Caching middleware (`caching-middleware.ts`)
 - Pagination patterns (`pagination.ts`)
+- Blacklist management (`blacklist.ts`)
 
 Run (example):
 
