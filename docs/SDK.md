@@ -5,13 +5,13 @@ The SellAuth TypeScript SDK (`@wtfservices/sellauth-utils`) provides thin, typed
 ## Installation
 
 ```bash
-pnpm add sellauth-utils
+pnpm add @wtfservices/sellauth-utils
 ```
 
 ## Basic Usage
 
 ```ts
-import { SellAuthClient } from 'sellauth-utils';
+import { SellAuthClient } from '@wtfservices/sellauth-utils';
 
 const client = new SellAuthClient({
   apiKey: process.env.SELLAUTH_API_KEY!, // Server-side secret
