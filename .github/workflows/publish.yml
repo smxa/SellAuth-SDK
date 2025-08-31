@@ -80,6 +80,10 @@ jobs:
         run: |
           pnpm publish --access public --no-git-checks
 
+      - name: Pack (create tarball for artifact)
+        if: steps.published.outputs.already == 'false'
+        run: pnpm pack --pack-destination .
+
       - name: Show published tarball
         if: steps.published.outputs.already == 'false'
         run: ls -1 *.tgz || echo 'No tarball in root'
