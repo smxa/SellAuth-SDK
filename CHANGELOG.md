@@ -1,5 +1,22 @@
 # Changelog
 
+## 0.4.2 - 2025-08-31
+
+### Added
+
+- Advanced client subpath export: `@wtfservices/sellauth-utils/advanced` providing `AdvancedSellAuthClient`, middleware (`authMiddleware`, `loggerMiddleware`, `retryMiddleware`, `responseParsingMiddleware`), `fetchTransport`, and types (`Middleware`, `NormalizedRequest`, `TransportResponseLike`, `SellAuthAdvancedConfig`, `RequestFn`).
+
+### Changed
+
+- Build now bundles `src/sdk/advanced.ts` directly (separate `dist/sdk/advanced.*` outputs).
+- Examples updated to import from published package paths instead of relative source.
+
+### Migration
+
+- Replace any local relative advanced imports:
+  - Before: `import { AdvancedSellAuthClient } from '../src/sdk/advanced';`
+  - After: `import { AdvancedSellAuthClient } from '@wtfservices/sellauth-utils/advanced';`
+
 ## 0.4.1 - 2025-08-31
 
 ### Changed
