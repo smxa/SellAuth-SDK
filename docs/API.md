@@ -75,6 +75,14 @@ curl -X POST "https://api.sellauth.com/v1/shops/{shopId}/coupons" \
 - GET `/shops/{shopId}/analytics/top-products`
 - GET `/shops/{shopId}/analytics/top-customers`
 
+Optional observed query params for overview & graph:
+
+- `start` ISO timestamp
+- `end` ISO timestamp
+- `excludeManual` 0/1
+- `excludeArchived` 0/1
+- `currency` ISO currency code (e.g. USD)
+
 ### Blacklist
 
 - GET `/shops/{shopId}/blacklist`
@@ -167,7 +175,7 @@ curl -X POST "https://api.sellauth.com/v1/shops/{shopId}/coupons" \
 
 ### Notifications
 
-- GET `/shops/{shopId}/notifications/latest`
+- GET `/shops/{shopId}/notifications/latest` (implemented)
 - GET `/shops/{shopId}/notifications/page`
 - POST `/shops/{shopId}/notifications/mark-as-read`
 - GET `/shops/{shopId}/notifications/settings`

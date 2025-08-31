@@ -50,7 +50,21 @@ export interface TopCustomerAnalyticsItem {
 }
 
 /**
- * Analytics API wrapper. Endpoints are GET only; no params currently documented besides shopId path.
+ * Optional query parameters accepted by (observed) analytics endpoints.
+ * Dates may be provided as Date or preformatted ISO strings.
+ * Booleans are serialized to 0/1 per backend expectation.
+ */
+export interface AnalyticsQueryParams {
+  start?: string | Date;
+  end?: string | Date;
+  excludeManual?: boolean; // 1 to exclude manual orders, 0 include
+  excludeArchived?: boolean; // 1 to exclude archived products/orders, 0 include
+  currency?: string; // e.g. 'USD'
+  [k: string]: unknown;
+}
+
+/**
+ * Analytics API wrapper. Endpoints are GET only.
  * NOTE: Some response shapes (graph, top products/customers) are inferred due to missing official schema; treat fields as best‑effort.
  */
 export class AnalyticsAPI {
@@ -63,14 +77,53 @@ export class AnalyticsAPI {
     return `/shops/${this._shopId}/analytics${path ? `/${path}` : ''}`;
   }
 
-  /** Retrieve aggregate revenue / orders / customers snapshot and change percentages. */
-  async overview(): Promise<OverviewAnalytics> {
-    return this._http.request<OverviewAnalytics>('GET', this.base());
+  private buildQuery(params?: AnalyticsQueryParams): Record<string, any> | undefined {
+    if (!params) return undefined;
+    const out: Record<string, any> = {};
+    // Stable key order
+    const order: (keyof AnalyticsQueryParams)[] = [
+      'start',
+      'end',
+      'excludeManual',
+      'excludeArchived',
+      'currency',
+    ];
+    for (const key of order) {
+      const v = params[key];
+      if (v === undefined || v === null) continue;
+      if (key === 'start' || key === 'end') {
+        out[key] = v instanceof Date ? v.toISOString() : String(v);
+      } else if (typeof v === 'boolean') {
+        out[key] = v ? '1' : '0';
+      } else {
+        out[key] = v as any;
+      }
+    }
+    // Include any extra unknown keys verbatim (excluding ones we handled)
+    for (const [k, v] of Object.entries(params)) {
+      if (order.includes(k as any)) continue;
+      if (v === undefined || v === null) continue;
+      out[k] = v;
+    }
+    return Object.keys(out).length ? out : undefined;
   }
 
-  /** Retrieve time‑series graph data (schema inferred). */
-  async graph(): Promise<GraphAnalyticsResponse> {
-    return this._http.request<GraphAnalyticsResponse>('GET', this.base('graph'));
+  /** Retrieve aggregate revenue / orders / customers snapshot and change percentages.
+   * @param params Optional query params: start, end, excludeManual, excludeArchived, currency
+   */
+  async overview(params?: AnalyticsQueryParams): Promise<OverviewAnalytics> {
+    return this._http.request<OverviewAnalytics>('GET', this.base(), {
+      query: this.buildQuery(params),
+    });
+  }
+
+  /** Retrieve time‑series graph data (schema inferred).
+   * @param params Optional query params: start, end, excludeManual, excludeArchived, currency
+   */
+  async graph(params?: AnalyticsQueryParams): Promise<GraphAnalyticsResponse> {
+    return this._http.request<GraphAnalyticsResponse>('GET', this.base('graph'), {
+      query: this.buildQuery(params),
+    });
   }
 
   /** Retrieve top 5 products by revenue (fields inferred). */

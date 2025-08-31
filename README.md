@@ -87,7 +87,20 @@ console.log(session.invoice_url, session.url);
 ### Analytics
 
 ```ts
-const overview = await client.analytics(shopId).overview();
+// Overview with optional date range + filters
+const overview = await client.analytics(shopId).overview({
+  start: new Date(Date.now() - 48 * 3600_000),
+  end: new Date(),
+  excludeManual: false,
+  excludeArchived: false,
+  currency: 'USD',
+});
+
+// Graph time-series with same params
+const graph = await client
+  .analytics(shopId)
+  .graph({ start: '2025-08-30T21:00:00.000Z', end: '2025-09-01T20:59:59.999Z' });
+
 const topCustomers = await client.analytics(shopId).topCustomers();
 ```
 
@@ -162,7 +175,7 @@ Exports (index):
 
 - `SellAuthClient`
 - `AdvancedSellAuthClient`
-- Resource factories: `shops`, `products`, `invoices`, `checkout`, `cryptoWallet`, `blacklist`, `analytics`
+- Resource factories: `shops`, `products`, `invoices`, `checkout`, `cryptoWallet`, `blacklist`, `analytics`, `notifications`
 - Pagination: `paginateAll`, `fetchAllPages`, `fetchPages`
 - Errors: `SellAuthError`
 
@@ -185,6 +198,7 @@ See `examples/` for:
 - Pagination patterns (`pagination.ts`)
 - Blacklist management (`blacklist.ts`)
 - Analytics overview (`analytics.ts`)
+- Notifications latest (add your own example script)
 
 Run (example):
 

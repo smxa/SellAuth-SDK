@@ -6,3 +6,4 @@ export * from './customers';
 export * from './shops';
 export * from './blacklist';
 export * from './analytics';
+export * from './notifications';
