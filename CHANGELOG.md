@@ -4,7 +4,7 @@
 
 ### Added
 
-- Added `notifications(shopId)` method to `SellAuthClient` for accessing shop notifications.
+- Added `notifications(shopId)` resource with `latest()` method to fetch most recent shop notifications (mirrors API notifications endpoint) and advanced analytics parameter support surfaced in examples.
 
 ## 0.5.2 - 2025-09-01
 
