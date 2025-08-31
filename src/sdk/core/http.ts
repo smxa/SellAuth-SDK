@@ -18,6 +18,44 @@ export class SellAuthError extends Error {
   }
 }
 
+export function buildQueryString(obj: Record<string, any>): string {
+  const parts: string[] = [];
+  for (const [key, value] of Object.entries(obj)) {
+    if (value === undefined || value === null) continue;
+    if (Array.isArray(value)) {
+      if (value.length === 0) continue;
+      let idx = 0;
+      for (const item of value) {
+        if (item === undefined || item === null) continue;
+        parts.push(
+          `${encodeURIComponent(key)}[${idx}]=${encodeURIComponent(
+            item instanceof Date ? item.toISOString() : String(item),
+          )}`,
+        );
+        idx++;
+      }
+    } else if (value instanceof Date) {
+      parts.push(`${encodeURIComponent(key)}=${encodeURIComponent(value.toISOString())}`);
+    } else if (typeof value === 'object') {
+      // For plain objects, flatten one level: key[sub]=val (no deep recursion for now)
+      for (const [subKey, subVal] of Object.entries(value)) {
+        if (subVal === undefined || subVal === null) continue;
+        parts.push(
+          `${encodeURIComponent(key)}[${encodeURIComponent(subKey)}]=${encodeURIComponent(
+            subVal instanceof Date ? subVal.toISOString() : String(subVal),
+          )}`,
+        );
+      }
+    } else {
+      parts.push(`${encodeURIComponent(key)}=${encodeURIComponent(String(value))}`);
+    }
+  }
+  return parts.join('&');
+}
+
+/**
+ * Internal HTTP client. Exports buildQueryString for advanced client reuse.
+ */
 export class HttpClient {
   private apiKey: string;
   private baseUrl: string;
@@ -127,14 +165,13 @@ export class HttpClient {
   }
 
   private makeUrl(path: string, query?: Record<string, any>): string {
+    // build query string with array index serialization (key[0]=val)
+
     let full = path.startsWith('http')
       ? path
       : `${this.baseUrl}${path.startsWith('/') ? '' : '/'}${path}`;
     if (query && Object.keys(query).length) {
-      const qs = Object.entries(query)
-        .filter(([, v]) => v !== undefined && v !== null)
-        .map(([k, v]) => encodeURIComponent(k) + '=' + encodeURIComponent(String(v)))
-        .join('&');
+      const qs = buildQueryString(query);
       if (qs) full += (full.includes('?') ? '&' : '?') + qs;
     }
     return full;

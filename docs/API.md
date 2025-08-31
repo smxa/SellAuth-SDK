@@ -1,6 +1,6 @@
 # SellAuth API Reference
 
-_Last updated: 2025-08-30_
+_Last updated: 2025-09-01_
 
 Consolidated reference for SellAuth REST API endpoints. Includes authentication, core concepts, and resource endpoints. Original docs: see Appendix.
 
@@ -161,7 +161,7 @@ Optional observed query params for overview & graph:
 
 ### Invoices
 
-- GET `/shops/{shopId}/invoices`
+- GET `/shops/{shopId}/invoices` (supports array filters e.g. `?statuses[0]=pending&statuses[1]=completed`)
 - GET `/shops/{shopId}/invoices/{invoiceId}`
 - POST `/shops/{shopId}/invoices/{invoiceId}/archive`
 - POST `/shops/{shopId}/invoices/{invoiceId}/unarchive`

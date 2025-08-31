@@ -5,6 +5,7 @@ import type {
   SellAuthAdvancedConfig,
 } from './core/config';
 import { normalizeConfig } from './core/config';
+import { buildQueryString } from './core/http';
 import { SellAuthError } from './core/http';
 import {
   authMiddleware,
@@ -51,10 +52,8 @@ export class AdvancedSellAuthClient {
     let base = this.config.baseUrl.replace(/\/$/, '');
     let full = path.startsWith('http') ? path : `${base}${path.startsWith('/') ? '' : '/'}${path}`;
     if (query && Object.keys(query).length) {
-      const qs = Object.entries(query)
-        .filter(([, v]) => v !== undefined && v !== null)
-        .map(([k, v]) => encodeURIComponent(k) + '=' + encodeURIComponent(String(v)))
-        .join('&');
+      // array-aware serialization below
+      const qs = buildQueryString(query); // supports array indices key[0]=value
       if (qs) full += (full.includes('?') ? '&' : '?') + qs;
     }
     return full;
