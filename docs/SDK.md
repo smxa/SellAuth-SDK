@@ -848,6 +848,17 @@ await client.customers(shopId).bulkUpdateBan({
 
 ## Invoices
 
+### Query Serialization Note
+
+Array and shallow object filters use bracket notation. Examples:
+
+- Arrays: `statuses: ['pending','completed']` -> `?statuses[0]=pending&statuses[1]=completed`
+- Objects (flags / maps): `{ gateways: { stripe: true } }` -> `?gateways[stripe]=1`
+- Dates: `Date` instances -> ISO strings
+- Booleans: serialized as `0` / `1`
+
+This applies to all list/filter methods (products, customers, invoices, analytics, etc.). Simple `key=value` still works.
+
 Invoice listing, status changes, refunds, and item replacement.
 
 ### Exported Types

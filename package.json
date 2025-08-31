@@ -1,6 +1,6 @@
 {
   "name": "@wtfservices/sellauth-utils",
-  "version": "0.5.3",
+  "version": "0.5.4",
   "description": "TypeScript SDK for the SellAuth API (resources, advanced client, pagination, middleware).",
   "license": "MIT",
   "author": "WTF Services <business@illegal.wtf>",

@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.5.4 - 2025-09-01
+
+### Changed
+
+- Query serialization now supports arrays and shallow objects using bracket notation (e.g. `statuses[0]=pending&statuses[1]=completed` and `gateways[stripe]=1`). Dates are serialized to ISO strings; booleans remain 0/1. This enables invoice list filters like `statuses` to be accepted by the API.
+
+### Docs
+
+- Added invoices statuses array example and documented query serialization behavior in SDK docs.
+
+### Notes
+
+- Backwards compatible: previous simple key=value query usage still works; only additional serialization forms added.
+
 ## 0.5.3 - 2025-09-01
 
 ### Added
